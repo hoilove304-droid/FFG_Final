@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/reset.css";
 import "../styles/layout.css";
 import "../styles/a01_login.css";
@@ -7,6 +8,8 @@ import logoImg from "../assets/logo.png"
 
 
 function LoginPage(){
+    const navigate = useNavigate();
+
     const [bankCode, setBankCode] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -42,14 +45,14 @@ function LoginPage(){
 
             if (data.success) {
                 setErrorMessage("");
-                alert("로그인 성공");
 
-                // 임시 확인용
-                console.log("아이디:", data.id);
-                console.log("권한:", data.role);
-                console.log("은행코드:", data.bankCode);
-
-                // 다음 단계에서 페이지 이동 처리 예정
+                if (data.role === "admin") {
+                    navigate("/admin");
+                } else if (data.role === "bank") {
+                    navigate(`/bank/${data.bankCode}`);
+                } else {
+                    setErrorMessage("권한 정보가 올바르지 않습니다.");
+                }
             } else {
                 setErrorMessage(data.message || "로그인에 실패했습니다.");
             }
