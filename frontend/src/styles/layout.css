@@ -1,0 +1,114 @@
+@charset "UTF-8";
+/********************* 수정 필요시 회의 후 수정 必 *********************/
+:root {
+    --bg-color: #f3f6f8;
+    --card-bg: #ffffff;
+
+    --primary-green: #0B9B97;
+    --primary-green-dark: #007a65;
+    --primary-green-light: #e6f4f1;
+
+    --text-main: #1c2430;
+    --text-sub: #6b7280;
+
+    --border-color: #e5e7eb;
+    --input-bg: #ffffff;
+}
+button:hover {
+    background-color: var(--primary-green-dark);
+}
+/**** 화면 전체 / 건들지말것 / 가로 및 세로 스크롤 방지 *****/
+.app_container {
+    display: flex;        /* 핵심: 가로 배치 */
+    width: 100%;
+    min-height: 100vh;    /* 화면 전체 높이 사용 */
+    overflow: hidden;     /* 불필요한 스크롤 방지 */
+}
+
+/***** 좌측 고정 내비게이션(최종) *****/
+.sidebar {
+    width: 60px;
+    padding-top: 20px;
+    border-right: 2px solid #0B9B97;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+    box-shadow: 6px 0 10px rgba(0, 0, 0, 0.08);
+}
+.sidebar_nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 20px;
+}
+.nav_item {
+    width: 60px;
+    height: 60px;
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: all 0.25s ease;
+}
+/* 내비게이션 아이콘 */
+.nav_item.chart{background-image: url("/static/images/nav/chart.png");}
+.nav_item.chart:hover,
+.nav_item.chart.active{background-image: url("/static/images/nav/chart_on.png"); transform: scale(1.1);}
+
+.nav_item.customer{background-image: url("/static/images/nav/customer.png");}
+.nav_item.customer:hover,
+.nav_item.customer.active{background-image: url("/static/images/nav/customer_on.png"); transform: scale(1.1);}
+
+.nav_item.error{background-image: url("/static/images/nav/error.png");}
+.nav_item.error:hover,
+.nav_item.error.active{background-image: url("/static/images/nav/error_on.png"); transform: scale(1.1);}
+
+.nav_item.notice{background-image: url("/static/images/nav/notice.png"); }
+.nav_item.notice:hover,
+.nav_item.notice.active{background-image: url("/static/images/nav/notice_on.png"); transform: scale(1.1);}
+
+.nav_item.community{background-image: url("/static/images/nav/community.png"); background-size: 32px 32px;}
+.nav_item.community:hover,
+.nav_item.community.active{background-image: url("/static/images/nav/community_on.png"); transform: scale(1.1);}
+
+.nav_item.faq{background-image: url("/static/images/nav/faq.png");}
+.nav_item.faq:hover,
+.nav_item.faq.active{background-image: url("/static/images/nav/faq_on.png"); transform: scale(1.1);}
+
+.nav_item.calendar{background-image: url("/static/images/nav/calendar.png");}
+.nav_item.calendar:hover,
+.nav_item.calendar.active{background-image: url("/static/images/nav/calendar_on.png"); transform: scale(1.1);}
+
+.nav_item.chating{background-image: url("/static/images/nav/chating.png"); background-size: 32px 32px;}
+.nav_item.chating:hover,
+.nav_item.chating.active{background-image: url("/static/images/nav/chating_on.png"); transform: scale(1.1);}
+
+.sidebar_bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.nav_item.logout{
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 40px;
+}
+.nav_item.logout:hover{
+    color: #009577 !important;
+}
+
+/* 우측 콘텐츠 */
+.content{
+    flex: 1;
+    overflow: hidden;
+    background: #fff;
+    padding: 30px;
+    background-color: var(--bg-color);
+}
+

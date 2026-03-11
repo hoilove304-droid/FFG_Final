@@ -1,0 +1,53 @@
+@charset "UTF-8";
+/********************* 수정 필요시 회의 후 수정 必 *********************/
+/***** font *****/
+@font-face {font-family: 'Hana2'; src: url('/static/fonts/Hana2-Light.ttf') format('truetype'); font-weight: 300; font-style: normal;}
+@font-face {font-family: 'Hana2'; src: url('/static/fonts/Hana2-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal;}
+@font-face {font-family: 'Hana2'; src: url('/static/fonts/Hana2-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal;}
+@font-face {font-family: 'Hana2'; src: url('/static/fonts/Hana2-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal;}
+@font-face {font-family: 'Hana2'; src: url('/static/fonts/Hana2-Heavy.ttf') format('truetype'); font-weight: 900; font-style: normal;}
+@font-face {font-family: 'Hana2'; src: url('/static/fonts/Hana2-CM.ttf') format('truetype'); font-weight: 800; font-style: normal;}
+
+/* Box model 통일 */
+*, *::before, *::after {box-sizing: border-box;}
+
+/* 기본 폰트 (금융/기업용 안정 조합) */
+body {font-family: 'Hana2', 'Pretendard', sans-serif; line-height: 1.5; color: #111827; height: 100%; margin: 0; overflow: hidden;}
+
+/* 링크 초기화 */
+a {text-decoration: none; color: inherit;}
+
+/* 리스트 초기화 */
+ul, ol {list-style: none; margin: 0; padding: 0;}
+
+/* 버튼 초기화 */
+button {background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;}
+
+/* 입력 요소 기본 스타일 통일 */
+input, textarea, select {font-family: inherit; font-size: inherit; color: inherit; outline: none;}
+
+/* 이미지 정렬 */
+img {display: block; max-width: 100%;}
+
+/* 접근성: 포커스 링은 개별 CSS에서 정의 */
+:focus {outline: none;}
+
+h1, h2, h3, h4, h5, h6,
+p, span,
+blockquote, pre,
+a,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strong, sub, sup,
+b, u, i,
+dl, dt, dd,
+ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}

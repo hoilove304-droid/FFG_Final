@@ -21,4 +21,11 @@
         ORDER BY REGDTE DESC
     </select>
 
+    <select id="login" resultMap="memberMap">
+        SELECT MEMBER_ID, PWD, ROLE, BANK_CODE, EMAIL, PHONE, REGDTE
+        FROM FFG_MEMBER
+        WHERE MEMBER_ID = #{memberId}
+        AND PWD = #{pwd}
+    </select>
+
 </mapper>
