@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/reset.css";
 import "../styles/layout.css";
 import "../styles/a01_login.css";
-import logoImg from "../assets/logo.png"
+import logoImg from "../assets/images/logo.png"
 
 
 
@@ -45,6 +45,10 @@ function LoginPage(){
 
             if (data.success) {
                 setErrorMessage("");
+
+                localStorage.setItem("memberId", data.id);
+                localStorage.setItem("role", data.role);
+                localStorage.setItem("bankCode", data.bankCode || "");
 
                 if (data.role === "admin") {
                     navigate("/admin");

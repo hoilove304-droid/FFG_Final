@@ -53,37 +53,37 @@ button:hover {
     transition: all 0.25s ease;
 }
 /* 내비게이션 아이콘 */
-.nav_item.chart{background-image: url("/static/images/nav/chart.png");}
+.nav_item.chart{background-image: url("../assets/images/nav/chart.png");}
 .nav_item.chart:hover,
-.nav_item.chart.active{background-image: url("/static/images/nav/chart_on.png"); transform: scale(1.1);}
+.nav_item.chart.active{background-image: url("../assets/images/nav/chart_on.png"); transform: scale(1.1);}
 
-.nav_item.customer{background-image: url("/static/images/nav/customer.png");}
+.nav_item.customer{background-image: url("../assets/images/nav/customer.png");}
 .nav_item.customer:hover,
-.nav_item.customer.active{background-image: url("/static/images/nav/customer_on.png"); transform: scale(1.1);}
+.nav_item.customer.active{background-image: url("../assets/images/nav/customer_on.png"); transform: scale(1.1);}
 
-.nav_item.error{background-image: url("/static/images/nav/error.png");}
+.nav_item.error{background-image: url("../assets/images/nav/error.png");}
 .nav_item.error:hover,
-.nav_item.error.active{background-image: url("/static/images/nav/error_on.png"); transform: scale(1.1);}
+.nav_item.error.active{background-image: url("../assets/images/nav/error_on.png"); transform: scale(1.1);}
 
-.nav_item.notice{background-image: url("/static/images/nav/notice.png"); }
+.nav_item.notice{background-image: url("../assets/images/nav/notice.png"); }
 .nav_item.notice:hover,
-.nav_item.notice.active{background-image: url("/static/images/nav/notice_on.png"); transform: scale(1.1);}
+.nav_item.notice.active{background-image: url("../assets/images/nav/notice_on.png"); transform: scale(1.1);}
 
-.nav_item.community{background-image: url("/static/images/nav/community.png"); background-size: 32px 32px;}
+.nav_item.community{background-image: url("../assets/images/nav/community.png"); background-size: 32px 32px;}
 .nav_item.community:hover,
-.nav_item.community.active{background-image: url("/static/images/nav/community_on.png"); transform: scale(1.1);}
+.nav_item.community.active{background-image: url("../assets/images/nav/community_on.png"); transform: scale(1.1);}
 
-.nav_item.faq{background-image: url("/static/images/nav/faq.png");}
+.nav_item.faq{background-image: url("../assets/images/nav/faq.png");}
 .nav_item.faq:hover,
-.nav_item.faq.active{background-image: url("/static/images/nav/faq_on.png"); transform: scale(1.1);}
+.nav_item.faq.active{background-image: url("../assets/images/nav/faq_on.png"); transform: scale(1.1);}
 
-.nav_item.calendar{background-image: url("/static/images/nav/calendar.png");}
+.nav_item.calendar{background-image: url("../assets/images/nav/calendar.png");}
 .nav_item.calendar:hover,
-.nav_item.calendar.active{background-image: url("/static/images/nav/calendar_on.png"); transform: scale(1.1);}
+.nav_item.calendar.active{background-image: url("../assets/images/nav/calendar_on.png"); transform: scale(1.1);}
 
-.nav_item.chating{background-image: url("/static/images/nav/chating.png"); background-size: 32px 32px;}
+.nav_item.chating{background-image: url("../assets/images/nav/chating.png"); background-size: 32px 32px;}
 .nav_item.chating:hover,
-.nav_item.chating.active{background-image: url("/static/images/nav/chating_on.png"); transform: scale(1.1);}
+.nav_item.chating.active{background-image: url("../assets/images/nav/chating_on.png"); transform: scale(1.1);}
 
 .sidebar_bottom {
     margin-top: auto;
@@ -101,6 +101,19 @@ button:hover {
 }
 .nav_item.logout:hover{
     color: #009577 !important;
+}
+
+.logo_link {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.disabled_logo {
+    cursor: default;
+    pointer-events: none;
+    opacity: 1;
 }
 
 /* 우측 콘텐츠 */
