@@ -28,4 +28,9 @@
         AND PWD = #{pwd}
     </select>
 
+    <insert id="insertMember" parameterType="com.ffg.backend.dto.Member">
+        INSERT INTO FFG_MEMBER(MEMBER_ID, PWD, ROLE, BANK_CODE)
+        VALUES(#{memberId},#{pwd},#{role},#{bankCode})
+    </insert>
+
 </mapper>

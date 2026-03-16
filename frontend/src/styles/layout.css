@@ -119,9 +119,11 @@ button:hover {
 /* 우측 콘텐츠 */
 .content{
     flex: 1;
+    height: 100vh;
     overflow: hidden;
-    background: #fff;
-    padding: 30px;
+    padding: 20px;
     background-color: var(--bg-color);
+    min-width: 0;
+    box-sizing: border-box;
 }
 

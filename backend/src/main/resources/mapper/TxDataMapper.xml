@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.TxDataMapper">
+
+    <insert id="insertTxData" parameterType="com.ffg.backend.dto.TxDataRequest">
+        INSERT INTO FFG_TX_DATA (
+            TX_ID,
+            BANK_CODE,
+            TX_CHANNEL,
+            TX_TYPE,
+            TX_AMOUNT,
+            TX_DATETIME,
+            TX_COUNTRY,
+            TX_LOCATION,
+            DEVICE_TYPE,
+            DEVICE_OS,
+            DEVICE_ID,
+            IP_ADDRESS,
+            FRAUD_SCORE,
+            REGDTE,
+            USER_ID
+        )
+        VALUES (
+                   FFG_TX_DATA_SEQ.NEXTVAL,
+                   #{bankCode},
+                   #{txChannel},
+                   #{txType},
+                   #{txAmount},
+                   TO_DATE(#{txDatetime}, 'YYYY-MM-DD"T"HH24:MI'),
+                   #{txCountry},
+                   #{txLocation},
+                   #{deviceType},
+                   #{deviceOs},
+                   #{deviceId},
+                   #{ipAddress},
+                   0,
+                   SYSDATE,
+                   #{userId}
+               )
+    </insert>
+
+    <select id="selectRecentTxData"
+            resultType="com.ffg.backend.dto.TxDataResponse">
+        SELECT *
+        FROM (
+                 SELECT
+                     TX_ID AS txId,
+                     USER_ID AS userId,
+                     BANK_CODE AS bankCode,
+                     TX_TYPE AS txType,
+                     TX_AMOUNT AS txAmount,
+                     TX_DATETIME AS txDatetime
+                 FROM FFG_TX_DATA
+                 ORDER BY TX_ID DESC
+             )
+        WHERE ROWNUM &lt;= 10
+    </select>
+
+</mapper>

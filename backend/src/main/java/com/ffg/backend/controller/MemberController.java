@@ -2,6 +2,7 @@ package com.ffg.backend.controller;
 
 import com.ffg.backend.dto.Member;
 import com.ffg.backend.mapper.MemberMapper;
+import com.ffg.backend.service.MemberService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -10,12 +11,15 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
+@RequestMapping("/api")
 public class MemberController {
 
   private final MemberMapper memberMapper;
+  private final MemberService memberService;
 
-  public MemberController(MemberMapper memberMapper) {
+  public MemberController(MemberMapper memberMapper, MemberService memberService) {
     this.memberMapper = memberMapper;
+    this.memberService = memberService;
   }
 
   @GetMapping("/members")
@@ -23,7 +27,7 @@ public class MemberController {
     return memberMapper.findAll();
   }
 
-  @PostMapping("/api/login")
+  @PostMapping("/login")
   public Map<String, Object> login(@RequestBody Map<String, String> req) {
     String memberId = req.get("memberId");
     String pwd = req.get("pwd");
@@ -42,6 +46,18 @@ public class MemberController {
     result.put("id", member.getMemberId());
     result.put("role", member.getRole());
     result.put("bankCode", member.getBankCode());
+
+    return result;
+  }
+
+  @PostMapping("/members")
+  public Map<String, Object> insertMember(@RequestBody Member member) {
+    Map<String, Object> result = new HashMap<>();
+
+    int insertCount = memberService.insertMember(member);
+
+    result.put("success", insertCount > 0);
+    result.put("message", insertCount > 0 ? "사용자 추가 완료" : "사용자 추가 실패");
 
     return result;
   }

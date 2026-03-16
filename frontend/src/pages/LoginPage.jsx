@@ -36,6 +36,7 @@ function LoginPage(){
                 body: JSON.stringify({
                     memberId: username,
                     pwd: password,
+                    bankCode: bankCode,
                 }),
             });
 
