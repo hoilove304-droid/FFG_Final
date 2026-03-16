@@ -7,24 +7,12 @@ function Sidebar() {
     const role = localStorage.getItem("role");
     const bankCode = localStorage.getItem("bankCode") || "";
 
-    // 관리자 통계 클릭 시 기본으로 보여줄 은행 코드
     const defaultAdminBankCode = "02";
 
     const handleLogoClick = () => {
         if (role === "admin") {
             navigate("/admin");
         }
-        // bank는 로고 클릭 동작 없음
-    };
-
-    const handleCalendarClick = () => {
-        if (role === "admin") {
-            navigate("/scheduler");
-        }
-    };
-
-    const handleChatClick = () => {
-        alert("채팅 모달은 다음 단계에서 연결");
     };
 
     const handleLogout = () => {
@@ -41,7 +29,7 @@ function Sidebar() {
         <aside className="sidebar">
             <div className="sidebar_top">
                 {role === "admin" ? (
-                    <button type="button" onClick={handleLogoClick} className="logo_link">
+                    <button type="button" onClick={handleLogoClick} className="logo_link" title="홈">
                         <img src={logoImg} alt="FFG 로고" />
                     </button>
                 ) : (
@@ -84,20 +72,26 @@ function Sidebar() {
             </nav>
 
             <div className="sidebar_bottom">
-                <button
-                    type="button"
-                    className="nav_item chating"
+                <NavLink
+                    to="/chat"
+                    className={({ isActive }) => `nav_item chating ${isActive ? "active" : ""}`}
                     title="채팅"
-                    onClick={handleChatClick}
                 />
 
-                <button
-                    type="button"
-                    className="nav_item calendar"
-                    title="근무스케줄표"
-                    onClick={handleCalendarClick}
-                    disabled={role !== "admin"}
-                />
+                {role === "admin" ? (
+                    <NavLink
+                        to="/scheduler"
+                        className={({ isActive }) => `nav_item calendar ${isActive ? "active" : ""}`}
+                        title="근무스케줄표"
+                    />
+                ) : (
+                    <button
+                        type="button"
+                        className="nav_item calendar disabled_nav"
+                        title="근무스케줄표"
+                        disabled
+                    />
+                )}
 
                 <button type="button" className="nav_item logout" onClick={handleLogout}>
                     Logout

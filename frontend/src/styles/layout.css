@@ -14,9 +14,7 @@
     --border-color: #e5e7eb;
     --input-bg: #ffffff;
 }
-button:hover {
-    background-color: var(--primary-green-dark);
-}
+
 /**** 화면 전체 / 건들지말것 / 가로 및 세로 스크롤 방지 *****/
 .app_container {
     display: flex;        /* 핵심: 가로 배치 */
@@ -53,6 +51,8 @@ button:hover {
     transition: all 0.25s ease;
 }
 /* 내비게이션 아이콘 */
+.logo_link img {transition: transform 0.25s ease;}
+.logo_link:hover img {transform: scale(1.1);}
 .nav_item.chart{background-image: url("../assets/images/nav/chart.png");}
 .nav_item.chart:hover,
 .nav_item.chart.active{background-image: url("../assets/images/nav/chart_on.png"); transform: scale(1.1);}
