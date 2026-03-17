@@ -1,0 +1,155 @@
+.customer-detail-page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail_top_bar,
+.customer_info_box,
+.detail_section,
+.detail_card {
+    background: var(--card-bg);
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.detail_top_bar,
+.customer_info_box {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.detail_bank_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.divider {
+    color: #9ca3af;
+}
+
+.back_btn {
+    margin-left: auto;
+    border: none;
+    background: var(--primary-green);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.detail_section,
+.detail_card {
+    padding: 14px;
+}
+
+.detail_section h3,
+.detail_card h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.detail_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.detail_card.compare_card {
+    min-height: 310px;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail_card.compare_card table {
+    flex: 1;
+}
+
+.detail_card {
+    height: fit-content;
+}
+
+.table_wrap {
+    overflow-x: auto;
+}
+
+.detail_section table,
+.detail_card table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.detail_section th,
+.detail_section td,
+.detail_card td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 10px;
+    text-align: center;
+    word-break: break-word;
+}
+
+.detail_section thead th {
+    background: #f8f6f6;
+}
+
+.detail_card table td:first-child {
+    width: 45%;
+}
+
+.detail_card table td:nth-child(2),
+.detail_card table td:nth-child(3) {
+    width: 27.5%;
+}
+
+.score_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.score_box {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.score_box span {
+    font-size: 15px;
+}
+
+.score_box strong {
+    font-size: 16px;
+}
+
+.score_box.total {
+    grid-column: 1 / -1;
+    background: #f0fdf4;
+}
+
+.error-text {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.recent_table_wrap {
+    max-height: 180px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+@media (max-width: 1200px) {
+    .detail_grid {
+        grid-template-columns: 1fr;
+    }
+}

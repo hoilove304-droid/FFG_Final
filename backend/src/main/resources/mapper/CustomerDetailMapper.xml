@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.CustomerDetailMapper">
+
+    <!-- 1. 고객 기본 정보 -->
+    <select id="selectCustomerInfo"
+            resultType="com.ffg.backend.dto.CustomerDetailCustomerDto">
+        SELECT
+            USER_ID AS userId,
+            NAME AS name,
+            PHONE AS phone,
+            EMAIL AS email,
+            BANK_CODE AS bankCode
+        FROM FFG_BANK_CUSTOMER_DETAIL
+        WHERE BANK_CODE = #{bankCode}
+          AND USER_ID = #{userId}
+    </select>
+
+
+    <!-- 2. 현재 선택된 거래 -->
+    <select id="selectCurrentTransaction"
+            resultType="com.ffg.backend.dto.CustomerTransactionDto">
+        SELECT
+            TX_ID AS txId,
+            USER_ID AS userId,
+            BANK_CODE AS bankCode,
+            TX_CHANNEL AS txChannel,
+            TX_TYPE AS txType,
+            TX_AMOUNT AS txAmount,
+            TO_CHAR(TX_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS txDatetime,
+            TX_COUNTRY AS txCountry,
+            TX_LOCATION AS txLocation,
+            DEVICE_TYPE AS deviceType,
+            DEVICE_OS AS deviceOs,
+            DEVICE_ID AS deviceId,
+            IP_ADDRESS AS ipAddress,
+            FRAUD_SCORE AS fraudScore
+        FROM FFG_TX_DATA
+        WHERE BANK_CODE = #{bankCode}
+          AND USER_ID = #{userId}
+          AND TX_ID = #{txId}
+    </select>
+
+
+    <!-- 3. 최근 거래 목록 (최대 10건) -->
+    <select id="selectRecentTransactions"
+            resultType="com.ffg.backend.dto.CustomerTransactionDto">
+        SELECT *
+        FROM (
+                 SELECT
+                     TX_ID AS txId,
+                     USER_ID AS userId,
+                     BANK_CODE AS bankCode,
+                     TX_CHANNEL AS txChannel,
+                     TX_TYPE AS txType,
+                     TX_AMOUNT AS txAmount,
+                     TO_CHAR(TX_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS txDatetime,
+                     TX_COUNTRY AS txCountry,
+                     TX_LOCATION AS txLocation,
+                     DEVICE_TYPE AS deviceType,
+                     DEVICE_OS AS deviceOs,
+                     DEVICE_ID AS deviceId,
+                     IP_ADDRESS AS ipAddress,
+                     FRAUD_SCORE AS fraudScore
+                 FROM FFG_TX_DATA
+                 WHERE BANK_CODE = #{bankCode}
+                   AND USER_ID = #{userId}
+                 ORDER BY TX_DATETIME DESC
+             )
+        WHERE ROWNUM &lt;= 10
+    </select>
+
+
+    <!-- 4. 요약 정보 (에러 수정 완료 버전) -->
+    <select id="selectSummary" resultType="map">
+        SELECT
+            (
+                SELECT NVL(ROUND(AVG(TX_AMOUNT)), 0)
+                FROM FFG_TX_DATA
+                WHERE BANK_CODE = #{bankCode}
+                  AND USER_ID = #{userId}
+            ) AS avgTxAmount,
+            (
+                SELECT COUNT(*)
+                FROM FFG_TX_DATA
+                WHERE BANK_CODE = #{bankCode}
+                  AND USER_ID = #{userId}
+            ) AS recentTxCount,
+            (
+                SELECT TX_COUNTRY
+                FROM (
+                         SELECT TX_COUNTRY, COUNT(*) AS cnt
+                         FROM FFG_TX_DATA
+                         WHERE BANK_CODE = #{bankCode}
+                           AND USER_ID = #{userId}
+                           AND TX_COUNTRY IS NOT NULL
+                         GROUP BY TX_COUNTRY
+                         ORDER BY cnt DESC, TX_COUNTRY
+                     )
+                WHERE ROWNUM = 1
+            ) AS mainCountry
+        FROM DUAL
+    </select>
+
+</mapper>

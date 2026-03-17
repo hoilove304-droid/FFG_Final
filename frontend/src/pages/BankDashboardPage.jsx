@@ -564,7 +564,9 @@ function BankDashboardPage() {
                                 return (
                                     <tr
                                         key={item.txId}
-                                        onDoubleClick={() => navigate(`/bank/${selectedBankCode}/customer/${item.userId}`)}
+                                        onDoubleClick={() =>
+                                            navigate(`/bank/${selectedBankCode}/customer/${item.userId}/tx/${item.txId}`)
+                                        }
                                         style={{ cursor: "pointer" }}
                                     >
                                         <td>{item.txId}</td>

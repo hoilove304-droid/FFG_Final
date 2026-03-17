@@ -63,7 +63,7 @@ function App() {
                 />
 
                 <Route
-                    path="/bank/:bankCode/customer/:userId"
+                    path="/bank/:bankCode/customer/:userId/tx/:txId"
                     element={
                         <CustomerRoute>
                             <CustomerDetailPage />
