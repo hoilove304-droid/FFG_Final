@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.DashboardMapper">
+
+    <select id="selectFraudRowsByBankCode"
+            parameterType="string"
+            resultType="com.ffg.backend.dto.DashboardFraudRowDto">
+        SELECT
+        t.TX_ID AS txId,
+        t.USER_ID AS userId,
+        c.NAME AS name,
+        CASE
+        WHEN t.TX_TYPE = 'LOGIN' THEN '반복 로그인 실패 후 성공'
+        WHEN t.TX_TYPE = 'PAYMENT' AND t.TX_COUNTRY &lt;&gt; 'KR' THEN '해외 고액 결제'
+        WHEN t.TX_TYPE = 'TRANSFER' AND t.TX_AMOUNT &gt;= 500000 THEN '단시간 다수 이체 의심'
+        ELSE '이상 거래 탐지'
+        END AS patternText,
+        t.FRAUD_SCORE AS fraudScore,
+        TO_CHAR(t.TX_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS txDatetime
+        FROM FFG_TX_DATA t
+        JOIN FFG_BANK_CUSTOMER_DETAIL c
+        ON t.USER_ID = c.USER_ID
+        WHERE t.BANK_CODE = #{bankCode}
+        ORDER BY t.TX_DATETIME DESC
+    </select>
+
+</mapper>

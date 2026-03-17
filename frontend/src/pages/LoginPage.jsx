@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/reset.css";
-import "../styles/layout.css";
-import "../styles/a01_login.css";
+import "../styles/Reset.css";
+import "../styles/Layout.css";
+import "../styles/Login.css";
 import logoImg from "../assets/images/logo.png"
 
 

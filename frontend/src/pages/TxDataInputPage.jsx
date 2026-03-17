@@ -489,7 +489,7 @@ function TxDataInputPage() {
                         </div>
 
                         <div className="right-card">
-                            <h3 className="right-card__title">최근 입력 데이터 (10건)</h3>
+                            <h3 className="right-card__title">최근 입력 데이터 (5건)</h3>
                             <div className="tx-table-wrap fixed-table">
                                 <table className="tx-table">
                                     <thead>
@@ -504,7 +504,7 @@ function TxDataInputPage() {
                                     </thead>
                                     <tbody>
                                     {txList.length > 0 ? (
-                                        txList.map((tx) => (
+                                        txList.slice(0, 5).map((tx) => (
                                             <tr key={tx.txId}>
                                                 <td>{tx.txId}</td>
                                                 <td>{tx.userId}</td>
