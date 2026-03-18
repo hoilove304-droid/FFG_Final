@@ -8,6 +8,22 @@ import "../styles/SchedulerPage.css";
 function SchedulerPage() {
     const [showLogModal, setShowLogModal] = useState(false);
     const [showEventModal, setShowEventModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [reloadSchedules, setReloadSchedules] = useState(() => () => {});
+
+    const handleOpenEventModal = ({ selectedDate, selectedEvent, reloadSchedules }) => {
+        setSelectedDate(selectedDate || null);
+        setSelectedEvent(selectedEvent || null);
+        setReloadSchedules(() => reloadSchedules || (() => {}));
+        setShowEventModal(true);
+    };
+
+    const handleCloseEventModal = () => {
+        setShowEventModal(false);
+        setSelectedDate(null);
+        setSelectedEvent(null);
+    };
 
     return (
         <div className="scheduler-page">
@@ -15,14 +31,19 @@ function SchedulerPage() {
 
             <AttendancePanel onOpenLog={() => setShowLogModal(true)} />
 
-            <CalendarSection onOpenEvent={() => setShowEventModal(true)} />
+            <CalendarSection onOpenEvent={handleOpenEventModal} />
 
             {showLogModal && (
                 <AttendanceLogModal onClose={() => setShowLogModal(false)} />
             )}
 
             {showEventModal && (
-                <EventModal onClose={() => setShowEventModal(false)} />
+                <EventModal
+                    onClose={handleCloseEventModal}
+                    selectedDate={selectedDate}
+                    selectedEvent={selectedEvent}
+                    onSaved={reloadSchedules}
+                />
             )}
         </div>
     );

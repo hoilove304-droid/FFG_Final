@@ -104,7 +104,7 @@
 
 /* 캘린더 자리 */
 .calendar-box {
-    height: 500px;
+    height: 580px;
     border-radius: 10px;
     background: #f9fafb;
     display: flex;
@@ -171,4 +171,44 @@
 .modal-content button:last-of-type {
     background: #6b7280;
     color: #fff;
+}
+
+.real-calendar {
+    padding: 12px;
+    background: #ffffff;
+}
+
+.real-calendar .fc {
+    width: 100%;
+}
+
+.real-calendar .fc-toolbar-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.real-calendar .fc-button {
+    border-radius: 8px !important;
+    border: none !important;
+    padding: 6px 12px !important;
+}
+
+.real-calendar .fc-daygrid-day {
+    cursor: pointer;
+}
+
+.event-all-day {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.event-modal-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
 }

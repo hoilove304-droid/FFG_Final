@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.ScheduleMapper">
+
+    <select id="findSchedulesByUserId"
+            parameterType="string"
+            resultType="com.ffg.backend.dto.ScheduleDto">
+        SELECT
+            SCHEDULE_ID AS scheduleId,
+            USER_ID AS userId,
+            TITLE AS title,
+            CONTENT AS content,
+            TO_CHAR(START_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS startDate,
+            TO_CHAR(END_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS endDate,
+            ALL_DAY AS allDay,
+            TO_CHAR(REGDTE, 'YYYY-MM-DD HH24:MI:SS') AS regdte,
+            TO_CHAR(UPDATED_AT, 'YYYY-MM-DD HH24:MI:SS') AS updatedAt
+        FROM FFG_SCHEDULE
+        WHERE USER_ID = #{userId}
+        ORDER BY START_DATE ASC
+    </select>
+
+    <select id="findScheduleById"
+            parameterType="long"
+            resultType="com.ffg.backend.dto.ScheduleDto">
+        SELECT
+            SCHEDULE_ID AS scheduleId,
+            USER_ID AS userId,
+            TITLE AS title,
+            CONTENT AS content,
+            TO_CHAR(START_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS startDate,
+            TO_CHAR(END_DATE, 'YYYY-MM-DD"T"HH24:MI:SS') AS endDate,
+            ALL_DAY AS allDay,
+            TO_CHAR(REGDTE, 'YYYY-MM-DD HH24:MI:SS') AS regdte,
+            TO_CHAR(UPDATED_AT, 'YYYY-MM-DD HH24:MI:SS') AS updatedAt
+        FROM FFG_SCHEDULE
+        WHERE SCHEDULE_ID = #{scheduleId}
+    </select>
+
+    <insert id="insertSchedule"
+            parameterType="com.ffg.backend.dto.ScheduleCreateRequestDto">
+        INSERT INTO FFG_SCHEDULE (
+            SCHEDULE_ID,
+            USER_ID,
+            TITLE,
+            CONTENT,
+            START_DATE,
+            END_DATE,
+            ALL_DAY,
+            REGDTE,
+            UPDATED_AT
+        )
+        VALUES (
+                   FFG_SCHEDULE_SEQ.NEXTVAL,
+                   #{userId},
+                   #{title},
+                   #{content},
+                   TO_DATE(#{startDate}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+                   TO_DATE(#{endDate}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+                   #{allDay},
+                   SYSDATE,
+                   SYSDATE
+               )
+    </insert>
+
+    <update id="updateSchedule"
+            parameterType="com.ffg.backend.dto.ScheduleUpdateRequestDto">
+        UPDATE FFG_SCHEDULE
+        SET
+            TITLE = #{title},
+            CONTENT = #{content},
+            START_DATE = TO_DATE(#{startDate}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+            END_DATE = TO_DATE(#{endDate}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+            ALL_DAY = #{allDay},
+            UPDATED_AT = SYSDATE
+        WHERE SCHEDULE_ID = #{scheduleId}
+    </update>
+
+    <delete id="deleteSchedule" parameterType="long">
+        DELETE FROM FFG_SCHEDULE
+        WHERE SCHEDULE_ID = #{scheduleId}
+    </delete>
+
+</mapper>
