@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Reset.css";
 import "../styles/Layout.css";
 import "../styles/Login.css";
+import { apiUrl } from "../services/api";
 import logoImg from "../assets/images/logo.png"
 
 
@@ -28,15 +29,13 @@ function LoginPage(){
         }
 
         try {
-            const response = await fetch("http://localhost:8080/api/login", {
+            const response = await fetch(apiUrl("/api/login"), {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    memberId: username,
-                    pwd: password,
-                    bankCode: bankCode,
+                    memberId,
+                    pwd,
+                    bankCode,
                 }),
             });
 

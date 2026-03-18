@@ -1,7 +1,9 @@
-const BASE_URL = "http://localhost:8080/api/attendance";
+import { apiUrl } from "./api";
 
 export async function fetchAttendanceStatus(userId) {
-    const response = await fetch(`${BASE_URL}/status?userId=${encodeURIComponent(userId)}`);
+    const response = await fetch(
+        apiUrl(`/api/attendance/status?userId=${encodeURIComponent(userId)}`)
+    );
 
     if (!response.ok) {
         throw new Error("출퇴근 상태 조회 실패");
@@ -11,7 +13,7 @@ export async function fetchAttendanceStatus(userId) {
 }
 
 export async function checkIn(userId) {
-    const response = await fetch(`${BASE_URL}/checkin`, {
+    const response = await fetch(apiUrl("/api/attendance/checkin"), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,7 +31,7 @@ export async function checkIn(userId) {
 }
 
 export async function checkOut(userId) {
-    const response = await fetch(`${BASE_URL}/checkout`, {
+    const response = await fetch(apiUrl("/api/attendance/checkout"), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -47,7 +49,7 @@ export async function checkOut(userId) {
 }
 
 export async function fetchAttendanceLogs() {
-    const response = await fetch(`${BASE_URL}/logs`);
+    const response = await fetch(apiUrl("/api/attendance/logs"));
 
     if (!response.ok) {
         throw new Error("출퇴근 로그 조회 실패");

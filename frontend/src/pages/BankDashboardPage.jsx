@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiUrl } from "../services/api";
 import "../styles/BankDashboardPage.css";
 
 function BankDashboardPage() {
@@ -45,7 +46,7 @@ function BankDashboardPage() {
     }, [selectedBankCode]);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/dashboard/${selectedBankCode}`)
+        fetch(apiUrl(`/api/dashboard/${selectedBankCode}`))
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("대시보드 API 호출 실패");

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { apiUrl } from "../../services/api";
 import "../../styles/ChatModal.css";
 
 function ChatModal({ onClose }) {
@@ -23,7 +24,7 @@ function ChatModal({ onClose }) {
             setError("");
 
             const response = await fetch(
-                `http://localhost:8080/api/chat/users?memberId=${memberId}`
+                apiUrl(`/api/chat/users?memberId=${memberId}`)
             );
 
             if (!response.ok) {
@@ -71,7 +72,7 @@ function ChatModal({ onClose }) {
             setMessageError("");
 
             const response = await fetch(
-                `http://localhost:8080/api/chat/history?myId=${memberId}&targetId=${targetId}`
+                apiUrl(`/api/chat/history?myId=${memberId}&targetId=${targetId}`)
             );
 
             if (!response.ok) {
@@ -99,7 +100,7 @@ function ChatModal({ onClose }) {
 
         try {
             await fetch(
-                `http://localhost:8080/api/chat/read?myId=${memberId}&targetId=${targetId}`,
+                apiUrl(`/api/chat/read?myId=${memberId}&targetId=${targetId}`),
                 {
                     method: "POST",
                 }
@@ -188,7 +189,7 @@ function ChatModal({ onClose }) {
         try {
             setSending(true);
 
-            const response = await fetch("http://localhost:8080/api/chat/send", {
+            const response = await fetch(apiUrl("/api/chat/send"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

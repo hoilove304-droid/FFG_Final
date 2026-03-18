@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../services/api";
 import "../styles/TxDataInputPage.css";
 
 function TxDataInputPage() {
@@ -146,7 +147,7 @@ function TxDataInputPage() {
 
     const fetchRecentTxData = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/tx/recent");
+            const response = await fetch(apiUrl("/api/tx/recent"));
 
             if (!response.ok) {
                 throw new Error("최근 거래 데이터 조회 실패");
@@ -175,7 +176,7 @@ function TxDataInputPage() {
         if (!validateForm()) return;
 
         try {
-            const response = await fetch("http://localhost:8080/api/tx", {
+            const response = await fetch(apiUrl("/api/tx"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

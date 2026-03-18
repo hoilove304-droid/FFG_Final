@@ -1,8 +1,8 @@
-const BASE_URL = "http://localhost:8080/api";
+import { apiUrl } from "./api";
 
 export async function fetchCustomerDetail(bankCode, userId, txId) {
     const response = await fetch(
-        `${BASE_URL}/bank/${bankCode}/customer/${userId}/tx/${txId}`
+        apiUrl(`/api/bank/${bankCode}/customer/${userId}/tx/${txId}`)
     );
 
     if (!response.ok) {

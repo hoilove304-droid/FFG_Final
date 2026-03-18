@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getBoardConfig } from "../constants/boardConfig";
 import { deleteBoard, fetchBoardDetail } from "../services/boardApi";
+import { apiUrl } from "../services/api";
 import "../styles/BoardPage.css";
 
 function BoardDetailPage() {
@@ -120,7 +121,7 @@ function BoardDetailPage() {
                                 <label>첨부파일</label>
                                 <div>
                                     <a
-                                        href={`http://localhost:8080${detail.filepath}`}
+                                        href={apiUrl(detail.filepath)}
                                         target="_blank"
                                         rel="noreferrer"
                                     >

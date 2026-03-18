@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/api/boards";
+import { apiUrl } from "./api";
 
 export async function fetchBoardList({ boardType, page = 1, keyword = "" }) {
     const params = new URLSearchParams({
@@ -7,7 +7,7 @@ export async function fetchBoardList({ boardType, page = 1, keyword = "" }) {
         keyword,
     });
 
-    const response = await fetch(`${BASE_URL}?${params.toString()}`);
+    const response = await fetch(apiUrl(`/api/boards?${params.toString()}`));
 
     if (!response.ok) {
         throw new Error("게시글 목록 조회에 실패했습니다.");
@@ -21,7 +21,9 @@ export async function fetchBoardDetail({ boardNo, increaseReadcnt = true }) {
         increaseReadcnt: String(increaseReadcnt),
     });
 
-    const response = await fetch(`${BASE_URL}/${boardNo}?${params.toString()}`);
+    const response = await fetch(
+        apiUrl(`/api/boards/${boardNo}?${params.toString()}`)
+    );
 
     if (!response.ok) {
         throw new Error("게시글 상세 조회에 실패했습니다.");
@@ -50,7 +52,7 @@ export async function createBoard({
         formData.append("file", file);
     }
 
-    const response = await fetch(BASE_URL, {
+    const response = await fetch(apiUrl("/api/boards"), {
         method: "POST",
         body: formData,
     });
@@ -96,7 +98,7 @@ export async function updateBoard({
         formData.append("file", file);
     }
 
-    const response = await fetch(`${BASE_URL}/${boardNo}`, {
+    const response = await fetch(apiUrl(`/api/boards/${boardNo}`), {
         method: "PUT",
         body: formData,
     });
@@ -120,9 +122,12 @@ export async function deleteBoard(boardNo, boardType, memberId, role) {
         role,
     });
 
-    const response = await fetch(`${BASE_URL}/${boardNo}?${params.toString()}`, {
-        method: "DELETE",
-    });
+    const response = await fetch(
+        apiUrl(`/api/boards/${boardNo}?${params.toString()}`),
+        {
+            method: "DELETE",
+        }
+    );
 
     const result = await response.json();
 

@@ -1,7 +1,7 @@
-const BASE_URL = "http://localhost:8080/api";
+import { apiUrl } from "./api";
 
 export async function createMember(memberData) {
-    const response = await fetch(`${BASE_URL}/members`, {
+    const response = await fetch(apiUrl("/api/members"), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
