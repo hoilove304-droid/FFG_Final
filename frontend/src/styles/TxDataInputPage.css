@@ -276,3 +276,33 @@
         width: 100%;
     }
 }
+
+.tx-page__header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.tx-page__header-text {
+    min-width: 0;
+}
+
+.tx-page__back-btn {
+    min-width: 110px;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    background: #e5e7eb;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.tx-page__back-btn:hover {
+    background: #d1d5db;
+}

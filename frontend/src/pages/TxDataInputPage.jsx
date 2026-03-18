@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/TxDataInputPage.css";
 
 function TxDataInputPage() {
+    const navigate = useNavigate();
+
     const [form, setForm] = useState({
         userId: "",
         bankCode: "",
@@ -255,12 +258,25 @@ function TxDataInputPage() {
         }
     };
 
+    const handleGoBack = () => {
+        navigate("/admin");
+    };
+
     return (
         <div className="tx-page">
             <div className="tx-page__inner">
                 <div className="tx-page__header">
-                    <h2>거래 데이터 입력</h2>
-                    <p>이상거래 탐지를 위한 거래 정보를 입력합니다.</p>
+                    <div className="tx-page__header-text">
+                        <h2>거래 데이터 입력</h2>
+                        <p>이상거래 탐지를 위한 거래 정보를 입력합니다.</p>
+                    </div>
+                    <button
+                        type="button"
+                        className="tx-page__back-btn"
+                        onClick={handleGoBack}
+                    >
+                        돌아가기
+                    </button>
                 </div>
 
                 <div className="tx-layout">
