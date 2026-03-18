@@ -33,4 +33,10 @@
         VALUES(#{memberId},#{pwd},#{role},#{bankCode})
     </insert>
 
+    <select id="findByMemberId" parameterType="string" resultMap="memberMap">
+        SELECT MEMBER_ID, PWD, ROLE, BANK_CODE, EMAIL, PHONE, REGDTE
+        FROM FFG_MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
 </mapper>

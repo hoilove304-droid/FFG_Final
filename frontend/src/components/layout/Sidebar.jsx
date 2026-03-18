@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import logoImg from "../../assets/images/logo.png";
 
-function Sidebar() {
+function Sidebar({ onChatClick }) {
     const navigate = useNavigate();
 
     const role = localStorage.getItem("role");
@@ -72,10 +72,11 @@ function Sidebar() {
             </nav>
 
             <div className="sidebar_bottom">
-                <NavLink
-                    to="/chat"
-                    className={({ isActive }) => `nav_item chating ${isActive ? "active" : ""}`}
+                <button
+                    type="button"
+                    className="nav_item chating chat_button"
                     title="채팅"
+                    onClick={onChatClick}
                 />
 
                 {role === "admin" ? (

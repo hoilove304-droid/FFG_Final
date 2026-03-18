@@ -13,4 +13,6 @@ public interface MemberMapper {
   Member login(@Param("memberId") String memberId, @Param("pwd") String pwd);
 
   int insertMember(Member member);
+
+  Member findByMemberId(@Param("memberId") String memberId);
 }

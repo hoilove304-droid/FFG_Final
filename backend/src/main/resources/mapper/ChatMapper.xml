@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.ChatMapper">
+
+    <select id="findAllBankUsersExceptMe" resultType="com.ffg.backend.dto.ChatUserDto">
+        SELECT
+            M.MEMBER_ID AS memberId,
+            M.ROLE AS role,
+            M.BANK_CODE AS bankCode,
+            (
+                SELECT X.MESSAGE
+                FROM (
+                         SELECT MESSAGE
+                         FROM FFG_CHAT
+                         WHERE (SENDER_ID = #{memberId} AND RECEIVER_ID = M.MEMBER_ID)
+                            OR (SENDER_ID = M.MEMBER_ID AND RECEIVER_ID = #{memberId})
+                         ORDER BY SEND_TIME DESC, CHAT_ID DESC
+                     ) X
+                WHERE ROWNUM = 1
+            ) AS lastMessage,
+            (
+                SELECT COUNT(*)
+                FROM FFG_CHAT
+                WHERE SENDER_ID = M.MEMBER_ID
+                  AND RECEIVER_ID = #{memberId}
+                  AND IS_READ = 0
+            ) AS unreadCount
+        FROM FFG_MEMBER M
+        WHERE M.ROLE = 'bank'
+          AND M.MEMBER_ID != #{memberId}
+        ORDER BY M.BANK_CODE, M.MEMBER_ID
+    </select>
+
+    <select id="findSameBankUsersExceptMe" resultType="com.ffg.backend.dto.ChatUserDto">
+        SELECT
+            M.MEMBER_ID AS memberId,
+            M.ROLE AS role,
+            M.BANK_CODE AS bankCode,
+            (
+                SELECT X.MESSAGE
+                FROM (
+                         SELECT MESSAGE
+                         FROM FFG_CHAT
+                         WHERE (SENDER_ID = #{memberId} AND RECEIVER_ID = M.MEMBER_ID)
+                            OR (SENDER_ID = M.MEMBER_ID AND RECEIVER_ID = #{memberId})
+                         ORDER BY SEND_TIME DESC, CHAT_ID DESC
+                     ) X
+                WHERE ROWNUM = 1
+            ) AS lastMessage,
+            (
+                SELECT COUNT(*)
+                FROM FFG_CHAT
+                WHERE SENDER_ID = M.MEMBER_ID
+                  AND RECEIVER_ID = #{memberId}
+                  AND IS_READ = 0
+            ) AS unreadCount
+        FROM FFG_MEMBER M
+        WHERE M.MEMBER_ID != #{memberId}
+          AND (
+            M.ROLE = 'admin'
+           OR (M.ROLE = 'bank' AND M.BANK_CODE = #{bankCode})
+            )
+        ORDER BY
+            CASE WHEN M.ROLE = 'admin' THEN 0 ELSE 1 END,
+        M.BANK_CODE,
+        M.MEMBER_ID
+    </select>
+
+    <select id="findChatHistory" resultType="com.ffg.backend.dto.ChatMessageDto">
+        SELECT
+            CHAT_ID AS chatId,
+            SENDER_ID AS senderId,
+            RECEIVER_ID AS receiverId,
+            MESSAGE AS message,
+            SEND_TIME AS sendTime,
+            IS_READ AS isRead
+        FROM FFG_CHAT
+        WHERE (SENDER_ID = #{myId} AND RECEIVER_ID = #{targetId})
+           OR (SENDER_ID = #{targetId} AND RECEIVER_ID = #{myId})
+        ORDER BY SEND_TIME ASC, CHAT_ID ASC
+    </select>
+
+    <insert id="insertChatMessage">
+        INSERT INTO FFG_CHAT (
+            CHAT_ID,
+            SENDER_ID,
+            RECEIVER_ID,
+            MESSAGE,
+            SEND_TIME,
+            IS_READ
+        ) VALUES (
+                     FFG_CHAT_SEQ.NEXTVAL,
+                     #{senderId},
+                     #{receiverId},
+                     #{message},
+                     SYSDATE,
+                     0
+                 )
+    </insert>
+
+    <update id="markMessagesAsRead">
+        UPDATE FFG_CHAT
+        SET IS_READ = 1
+        WHERE RECEIVER_ID = #{myId}
+          AND SENDER_ID = #{targetId}
+          AND IS_READ = 0
+    </update>
+
+</mapper>
