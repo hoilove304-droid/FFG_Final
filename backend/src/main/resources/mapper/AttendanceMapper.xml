@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.AttendanceMapper">
+
+    <select id="countTodayAttendance" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM FFG_ATTENDANCE
+        WHERE USER_ID = #{userId}
+          AND TRUNC(WORK_DATE) = TRUNC(SYSDATE)
+    </select>
+
+    <select id="selectTodayCheckInTime" parameterType="string" resultType="string">
+        SELECT TO_CHAR(CHECK_IN, 'HH24:MI:SS')
+        FROM FFG_ATTENDANCE
+        WHERE USER_ID = #{userId}
+          AND TRUNC(WORK_DATE) = TRUNC(SYSDATE)
+    </select>
+
+    <select id="selectTodayCheckOutTime" parameterType="string" resultType="string">
+        SELECT TO_CHAR(CHECK_OUT, 'HH24:MI:SS')
+        FROM FFG_ATTENDANCE
+        WHERE USER_ID = #{userId}
+          AND TRUNC(WORK_DATE) = TRUNC(SYSDATE)
+    </select>
+
+    <insert id="insertCheckIn" parameterType="string">
+        INSERT INTO FFG_ATTENDANCE (
+            ATTENDANCE_ID,
+            USER_ID,
+            WORK_DATE,
+            CHECK_IN
+        )
+        VALUES (
+                   FFG_ATTENDANCE_SEQ.NEXTVAL,
+                   #{userId},
+                   TRUNC(SYSDATE),
+                   SYSDATE
+               )
+    </insert>
+
+    <update id="updateCheckOut" parameterType="string">
+        UPDATE FFG_ATTENDANCE
+        SET CHECK_OUT = SYSDATE
+        WHERE USER_ID = #{userId}
+          AND TRUNC(WORK_DATE) = TRUNC(SYSDATE)
+          AND CHECK_OUT IS NULL
+    </update>
+
+    <select id="selectAttendanceLogs"
+            resultType="com.ffg.backend.dto.AttendanceLogDto">
+        SELECT USER_ID AS userId,
+               '출근' AS type,
+               TO_CHAR(CHECK_IN, 'YYYY-MM-DD HH24:MI:SS') AS time
+        FROM FFG_ATTENDANCE
+        WHERE CHECK_IN IS NOT NULL
+
+        UNION ALL
+
+        SELECT USER_ID AS userId,
+               '퇴근' AS type,
+               TO_CHAR(CHECK_OUT, 'YYYY-MM-DD HH24:MI:SS') AS time
+        FROM FFG_ATTENDANCE
+        WHERE CHECK_OUT IS NOT NULL
+
+        ORDER BY time DESC
+    </select>
+
+</mapper>

@@ -8,14 +8,11 @@ import BoardListPage from "./pages/BoardListPage.jsx";
 import BoardWritePage from "./pages/BoardWritePage.jsx";
 import BoardDetailPage from "./pages/BoardDetailPage.jsx";
 import BoardEditPage from "./pages/BoardEditPage.jsx";
+import SchedulerPage from "./pages/SchedulerPage.jsx";
 import AppLayout from "./components/layout/AppLayout.jsx";
 import ProtectedRoute from "./router/ProtectedRoute.jsx";
 import BankRoute from "./router/BankRoute.jsx";
 import CustomerRoute from "./router/CustomerRoute.jsx";
-
-function SchedulerPage() {
-    return <div>근무스케줄표 페이지</div>;
-}
 
 function App() {
     return (
@@ -55,7 +52,6 @@ function App() {
                         </CustomerRoute>
                     }
                 />
-
                 <Route
                     path="/board/:boardKey"
                     element={
@@ -88,7 +84,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/scheduler"
                     element={

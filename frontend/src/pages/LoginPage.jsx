@@ -72,7 +72,7 @@ function LoginPage(){
 
         console.log("지원센터 문의:", supportMessage);
 
-        alert("문의 접수 가정");
+        alert("문의 접수가 완료되었습니다. (메일보내기 미구현)");
         setSupportMessage("");
         setIsSupportModalOpen(false);
     };
@@ -184,7 +184,7 @@ function LoginPage(){
                                 <form onSubmit={handleSupportSubmit}>
                 <textarea
                     name="message"
-                    placeholder="로그인 문제를 입력해주세요"
+                    placeholder="가입을 원하시는 경우: 은행명 / 성함 / 연락처를 남겨주세요."
                     value={supportMessage}
                     onChange={(e) => setSupportMessage(e.target.value)}
                     required
