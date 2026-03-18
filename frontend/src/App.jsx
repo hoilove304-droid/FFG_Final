@@ -4,26 +4,14 @@ import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 import BankDashboardPage from "./pages/BankDashboardPage.jsx";
 import TxDataInputPage from "./pages/TxDataInputPage.jsx";
 import CustomerDetailPage from "./pages/CustomerDetailPage.jsx";
+import BoardListPage from "./pages/BoardListPage.jsx";
+import BoardWritePage from "./pages/BoardWritePage.jsx";
+import BoardDetailPage from "./pages/BoardDetailPage.jsx";
+import BoardEditPage from "./pages/BoardEditPage.jsx";
 import AppLayout from "./components/layout/AppLayout.jsx";
 import ProtectedRoute from "./router/ProtectedRoute.jsx";
 import BankRoute from "./router/BankRoute.jsx";
 import CustomerRoute from "./router/CustomerRoute.jsx";
-
-function ErrorBoardPage() {
-    return <div>분석의뢰 게시판</div>;
-}
-
-function NoticeBoardPage() {
-    return <div>공지사항 게시판</div>;
-}
-
-function CommunityBoardPage() {
-    return <div>커뮤니티 게시판</div>;
-}
-
-function FaqBoardPage() {
-    return <div>FAQ 게시판</div>;
-}
 
 function SchedulerPage() {
     return <div>근무스케줄표 페이지</div>;
@@ -43,7 +31,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/admin/tx-input"
                     element={
@@ -52,7 +39,6 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/bank/:bankCode"
                     element={
@@ -61,7 +47,6 @@ function App() {
                         </BankRoute>
                     }
                 />
-
                 <Route
                     path="/bank/:bankCode/customer/:userId/tx/:txId"
                     element={
@@ -72,37 +57,34 @@ function App() {
                 />
 
                 <Route
-                    path="/board/error"
+                    path="/board/:boardKey"
                     element={
                         <ProtectedRoute allowedRoles={["admin", "bank"]}>
-                            <ErrorBoardPage />
+                            <BoardListPage />
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
-                    path="/board/notice"
+                    path="/board/:boardKey/write"
                     element={
                         <ProtectedRoute allowedRoles={["admin", "bank"]}>
-                            <NoticeBoardPage />
+                            <BoardWritePage />
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
-                    path="/board/community"
+                    path="/board/:boardKey/:boardNo/edit"
                     element={
                         <ProtectedRoute allowedRoles={["admin", "bank"]}>
-                            <CommunityBoardPage />
+                            <BoardEditPage />
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
-                    path="/board/faq"
+                    path="/board/:boardKey/:boardNo"
                     element={
                         <ProtectedRoute allowedRoles={["admin", "bank"]}>
-                            <FaqBoardPage />
+                            <BoardDetailPage />
                         </ProtectedRoute>
                     }
                 />

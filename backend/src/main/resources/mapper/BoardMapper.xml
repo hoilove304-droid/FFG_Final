@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ffg.backend.mapper.BoardMapper">
+
+    <resultMap id="boardMap" type="com.ffg.backend.dto.BoardDto">
+        <result property="boardNo" column="BOARD_NO"/>
+        <result property="refno" column="REFNO"/>
+        <result property="title" column="TITLE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="readcnt" column="READCNT"/>
+        <result property="regdte" column="REGDTE"/>
+        <result property="boardType" column="BOARD_TYPE"/>
+        <result property="filepath" column="FILEPATH"/>
+        <result property="fname" column="FNAME"/>
+        <result property="writerId" column="WRITER_ID"/>
+    </resultMap>
+
+    <select id="selectBoardList" resultMap="boardMap">
+        SELECT *
+        FROM (
+        SELECT inner_tbl.*, ROWNUM rn
+        FROM (
+        SELECT
+        BOARD_NO,
+        REFNO,
+        TITLE,
+        CONTENT,
+        READCNT,
+        TO_CHAR(REGDTE, 'YYYY-MM-DD') AS REGDTE,
+        BOARD_TYPE,
+        FILEPATH,
+        FNAME,
+        WRITER_ID
+        FROM FFG_BOARD2
+        WHERE BOARD_TYPE = #{boardType}
+        AND TITLE LIKE '%' || #{keyword} || '%'
+        ORDER BY BOARD_NO DESC
+        ) inner_tbl
+        WHERE ROWNUM <![CDATA[<=]]> #{endRow}
+        )
+        WHERE rn <![CDATA[>=]]> #{startRow}
+    </select>
+
+    <select id="countBoardList" resultType="int">
+        SELECT COUNT(*)
+        FROM FFG_BOARD2
+        WHERE BOARD_TYPE = #{boardType}
+        AND TITLE LIKE '%' || #{keyword} || '%'
+    </select>
+
+    <insert id="insertBoard" parameterType="com.ffg.backend.dto.BoardCreateRequestDto">
+        INSERT INTO FFG_BOARD2 (
+        BOARD_NO,
+        REFNO,
+        TITLE,
+        CONTENT,
+        READCNT,
+        REGDTE,
+        UPDATE_DATE,
+        BOARD_TYPE,
+        FILEPATH,
+        FNAME,
+        WRITER_ID
+        ) VALUES (
+        NVL((SELECT MAX(BOARD_NO) + 1 FROM FFG_BOARD2), 1),
+        #{refno},
+        #{title},
+        #{content},
+        0,
+        SYSDATE,
+        SYSDATE,
+        #{boardType},
+        NULL,
+        NULL,
+        #{writerId}
+        )
+    </insert>
+
+    <select id="selectBoardDetailByBoardNo" resultMap="boardMap">
+        SELECT
+        BOARD_NO,
+        REFNO,
+        TITLE,
+        CONTENT,
+        READCNT,
+        TO_CHAR(REGDTE, 'YYYY-MM-DD') AS REGDTE,
+        BOARD_TYPE,
+        FILEPATH,
+        FNAME,
+        WRITER_ID
+        FROM FFG_BOARD2
+        WHERE BOARD_NO = #{boardNo}
+    </select>
+
+    <update id="increaseReadcnt">
+        UPDATE FFG_BOARD2
+        SET READCNT = NVL(READCNT, 0) + 1
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <update id="updateBoard">
+        UPDATE FFG_BOARD2
+        SET TITLE = #{title},
+        CONTENT = #{content},
+        UPDATE_DATE = SYSDATE
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <delete id="deleteBoard">
+        DELETE FROM FFG_BOARD2
+        WHERE BOARD_NO = #{boardNo}
+    </delete>
+
+</mapper>
