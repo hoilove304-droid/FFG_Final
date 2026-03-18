@@ -31,6 +31,7 @@ public class MemberController {
   public Map<String, Object> login(@RequestBody Map<String, String> req) {
     String memberId = req.get("memberId");
     String pwd = req.get("pwd");
+    String bankCode = req.get("bankCode");
 
     Member member = memberMapper.login(memberId, pwd);
 
@@ -39,6 +40,12 @@ public class MemberController {
     if (member == null) {
       result.put("success", false);
       result.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
+      return result;
+    }
+
+    if (bankCode == null || bankCode.isBlank() || !bankCode.equals(member.getBankCode())) {
+      result.put("success", false);
+      result.put("message", "은행 코드가 올바르지 않습니다.");
       return result;
     }
 

@@ -124,7 +124,8 @@ function BoardEditPage() {
             setSubmitLoading(true);
             setError("");
 
-            const result = await updateBoard(boardNo, {
+            const result = await updateBoard({
+                boardNo,
                 title,
                 content,
                 boardType: config.boardType,

@@ -557,9 +557,9 @@ function BankDashboardPage() {
                         {fraudRows.length > 0 ? (
                             fraudRows.map((item) => {
                                 const actions = ["이메일 전송", "전화 안내", "거래 차단"];
-                                const action = actions[Math.floor(Math.random() * actions.length)];
-
-                                const minutes = Math.floor(Math.random() * 5) + 1;
+                                const txKey = Number(item.txId || 0);
+                                const action = actions[txKey % actions.length];
+                                const minutes = (txKey % 5) + 1;
 
                                 return (
                                     <tr
