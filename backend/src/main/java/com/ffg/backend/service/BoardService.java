@@ -62,10 +62,14 @@ public class BoardService {
   }
 
   public int updateBoard(Long boardNo, BoardUpdateRequestDto request) {
-    return boardMapper.updateBoard(boardNo, request.getTitle(), request.getContent());
+    return boardMapper.updateBoard(boardNo, request);
   }
 
   public int deleteBoard(Long boardNo) {
     return boardMapper.deleteBoard(boardNo);
+  }
+
+  public boolean hasChildBoards(Long boardNo) {
+    return boardMapper.countChildBoards(boardNo) > 0;
   }
 }

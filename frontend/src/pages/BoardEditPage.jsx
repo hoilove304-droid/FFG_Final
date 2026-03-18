@@ -19,6 +19,9 @@ function BoardEditPage() {
         title: "",
         content: "",
         writerId: "",
+        file: null,
+        currentFileName: "",
+        deleteFile: false,
     });
 
     useEffect(() => {
@@ -53,6 +56,9 @@ function BoardEditPage() {
                     title: result.title || "",
                     content: result.content || "",
                     writerId: result.writerId || "",
+                    file: null,
+                    currentFileName: result.fname || "",
+                    deleteFile: false,
                 });
             } catch (err) {
                 setError(err.message || "게시글 정보를 불러오지 못했습니다.");
@@ -77,6 +83,24 @@ function BoardEditPage() {
         setForm((prev) => ({
             ...prev,
             [name]: value,
+        }));
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files?.[0] || null;
+        setForm((prev) => ({
+            ...prev,
+            file,
+            deleteFile: false,
+        }));
+    };
+
+    const handleDeleteFileChange = (e) => {
+        const checked = e.target.checked;
+        setForm((prev) => ({
+            ...prev,
+            deleteFile: checked,
+            file: checked ? null : prev.file,
         }));
     };
 
@@ -106,6 +130,8 @@ function BoardEditPage() {
                 boardType: config.boardType,
                 memberId,
                 role,
+                file: form.file,
+                deleteFile: form.deleteFile,
             });
 
             if (!result.success) {
@@ -165,6 +191,33 @@ function BoardEditPage() {
                                     rows={14}
                                 />
                             </div>
+
+                            <div className="board_form_row">
+                                <label htmlFor="file">새 첨부파일</label>
+                                <input
+                                    id="file"
+                                    name="file"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+
+                            {form.currentFileName && (
+                                <div className="board_form_row">
+                                    <label>기존 파일</label>
+                                    <div>
+                                        <div>{form.currentFileName}</div>
+                                        <label style={{ display: "inline-flex", gap: "8px", marginTop: "8px" }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={form.deleteFile}
+                                                onChange={handleDeleteFileChange}
+                                            />
+                                            첨부파일 삭제
+                                        </label>
+                                    </div>
+                                </div>
+                            )}
 
                             {error && <div className="board_form_error">{error}</div>}
 

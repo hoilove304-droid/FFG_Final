@@ -147,7 +147,15 @@ function BoardListPage() {
                                     <td>{item.boardNo}</td>
                                     <td className="board_title_cell">
                                         <Link to={`/board/${boardKey}/${item.boardNo}`}>
-                                            {item.title}
+                                            <span
+                                                style={{
+                                                    display: "inline-block",
+                                                    paddingLeft: `${(item.depth || 0) * 20}px`,
+                                                }}
+                                            >
+                                                {(item.depth || 0) > 0 ? "↳ " : ""}
+                                                {item.title}
+                                            </span>
                                         </Link>
                                     </td>
                                     <td>{item.writerId || "-"}</td>

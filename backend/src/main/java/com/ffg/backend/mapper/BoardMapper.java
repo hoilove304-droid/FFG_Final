@@ -31,9 +31,10 @@ public interface BoardMapper {
 
   int updateBoard(
       @Param("boardNo") Long boardNo,
-      @Param("title") String title,
-      @Param("content") String content
+      @Param("request") BoardUpdateRequestDto request
   );
 
   int deleteBoard(@Param("boardNo") Long boardNo);
+
+  int countChildBoards(@Param("boardNo") Long boardNo);
 }

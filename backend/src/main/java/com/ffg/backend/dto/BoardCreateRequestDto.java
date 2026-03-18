@@ -7,6 +7,8 @@ public class BoardCreateRequestDto {
   private String content;
   private Integer boardType;
   private String writerId;
+  private String filepath;
+  private String fname;
 
   public Long getRefno() {
     return refno;
@@ -46,5 +48,21 @@ public class BoardCreateRequestDto {
 
   public void setWriterId(String writerId) {
     this.writerId = writerId;
+  }
+
+  public String getFilepath() {
+    return filepath;
+  }
+
+  public void setFilepath(String filepath) {
+    this.filepath = filepath;
+  }
+
+  public String getFname() {
+    return fname;
+  }
+
+  public void setFname(String fname) {
+    this.fname = fname;
   }
 }

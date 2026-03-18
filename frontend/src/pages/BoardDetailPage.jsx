@@ -58,6 +58,7 @@ function BoardDetailPage() {
         );
     }
 
+    const canWrite = role === "admin" || role === "bank";
     const canEditOrDelete =
         detail && (role === "admin" || detail.writerId === memberId);
 
@@ -114,6 +115,21 @@ function BoardDetailPage() {
                             </div>
                         </div>
 
+                        {detail.filepath && detail.fname && (
+                            <div className="board_form_row" style={{ marginBottom: "16px" }}>
+                                <label>첨부파일</label>
+                                <div>
+                                    <a
+                                        href={`http://localhost:8080${detail.filepath}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        {detail.fname}
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="board_detail_content">
                             {detail.content || ""}
                         </div>
@@ -126,6 +142,20 @@ function BoardDetailPage() {
                             >
                                 목록으로
                             </button>
+
+                            {canWrite && (
+                                <button
+                                    type="button"
+                                    className="board_submit_btn"
+                                    onClick={() =>
+                                        navigate(
+                                            `/board/${boardKey}/write?refno=${detail.boardNo}&parentTitle=${encodeURIComponent(detail.title)}`
+                                        )
+                                    }
+                                >
+                                    답글
+                                </button>
+                            )}
 
                             {canEditOrDelete && (
                                 <>

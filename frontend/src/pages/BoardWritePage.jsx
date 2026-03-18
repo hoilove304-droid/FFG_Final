@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getBoardConfig } from "../constants/boardConfig";
 import { createBoard } from "../services/boardApi";
 import "../styles/BoardPage.css";
@@ -7,14 +7,19 @@ import "../styles/BoardPage.css";
 function BoardWritePage() {
     const { boardKey } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const config = getBoardConfig(boardKey);
 
     const memberId = localStorage.getItem("memberId") || "";
     const role = localStorage.getItem("role") || "";
 
+    const refno = Number(searchParams.get("refno") || 0);
+    const parentTitle = searchParams.get("parentTitle") || "";
+
     const [form, setForm] = useState({
-        title: "",
+        title: refno > 0 ? `[답글] ${parentTitle}` : "",
         content: "",
+        file: null,
     });
 
     const [loading, setLoading] = useState(false);
@@ -43,6 +48,14 @@ function BoardWritePage() {
         setForm((prev) => ({
             ...prev,
             [name]: value,
+        }));
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files?.[0] || null;
+        setForm((prev) => ({
+            ...prev,
+            file,
         }));
     };
 
@@ -76,7 +89,8 @@ function BoardWritePage() {
                 content,
                 writerId: memberId,
                 boardType: config.boardType,
-                refno: 0,
+                refno,
+                file: form.file,
             });
 
             if (!result.success) {
@@ -97,8 +111,12 @@ function BoardWritePage() {
             <div className="board_card">
                 <div className="board_header">
                     <div>
-                        <h1 className="board_title">{config.title} 등록</h1>
-                        <p className="board_desc">새 게시글을 작성합니다.</p>
+                        <h1 className="board_title">
+                            {refno > 0 ? `${config.title} 답글 등록` : `${config.title} 등록`}
+                        </h1>
+                        <p className="board_desc">
+                            {refno > 0 ? "선택한 게시글에 대한 답글을 작성합니다." : "새 게시글을 작성합니다."}
+                        </p>
                     </div>
                 </div>
 
@@ -107,6 +125,13 @@ function BoardWritePage() {
                         <label>작성자</label>
                         <input type="text" value={memberId} readOnly />
                     </div>
+
+                    {refno > 0 && (
+                        <div className="board_form_row">
+                            <label>답글 대상</label>
+                            <input type="text" value={parentTitle} readOnly />
+                        </div>
+                    )}
 
                     <div className="board_form_row">
                         <label htmlFor="title">제목</label>
@@ -130,6 +155,16 @@ function BoardWritePage() {
                             onChange={handleChange}
                             placeholder="내용을 입력하세요"
                             rows={14}
+                        />
+                    </div>
+
+                    <div className="board_form_row">
+                        <label htmlFor="file">첨부파일</label>
+                        <input
+                            id="file"
+                            name="file"
+                            type="file"
+                            onChange={handleFileChange}
                         />
                     </div>
 

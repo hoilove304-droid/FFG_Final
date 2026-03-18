@@ -16,6 +16,7 @@
         <result property="filepath" column="FILEPATH"/>
         <result property="fname" column="FNAME"/>
         <result property="writerId" column="WRITER_ID"/>
+        <result property="depth" column="DEPTH"/>
     </resultMap>
 
     <select id="selectBoardList" resultMap="boardMap">
@@ -33,22 +34,32 @@
         BOARD_TYPE,
         FILEPATH,
         FNAME,
-        WRITER_ID
+        WRITER_ID,
+        LEVEL - 1 AS DEPTH
         FROM FFG_BOARD2
         WHERE BOARD_TYPE = #{boardType}
-        AND TITLE LIKE '%' || #{keyword} || '%'
-        ORDER BY BOARD_NO DESC
+        START WITH REFNO = 0
+        CONNECT BY PRIOR BOARD_NO = REFNO
+        ORDER SIBLINGS BY BOARD_NO DESC
         ) inner_tbl
-        WHERE ROWNUM <![CDATA[<=]]> #{endRow}
+        WHERE inner_tbl.TITLE LIKE '%' || #{keyword} || '%'
+        AND ROWNUM <![CDATA[<=]]> #{endRow}
         )
         WHERE rn <![CDATA[>=]]> #{startRow}
     </select>
 
     <select id="countBoardList" resultType="int">
         SELECT COUNT(*)
+        FROM (
+        SELECT
+        BOARD_NO,
+        TITLE
         FROM FFG_BOARD2
         WHERE BOARD_TYPE = #{boardType}
-        AND TITLE LIKE '%' || #{keyword} || '%'
+        START WITH REFNO = 0
+        CONNECT BY PRIOR BOARD_NO = REFNO
+        )
+        WHERE TITLE LIKE '%' || #{keyword} || '%'
     </select>
 
     <insert id="insertBoard" parameterType="com.ffg.backend.dto.BoardCreateRequestDto">
@@ -73,8 +84,8 @@
         SYSDATE,
         SYSDATE,
         #{boardType},
-        NULL,
-        NULL,
+        #{filepath, jdbcType=VARCHAR},
+        #{fname, jdbcType=VARCHAR},
         #{writerId}
         )
     </insert>
@@ -90,7 +101,8 @@
         BOARD_TYPE,
         FILEPATH,
         FNAME,
-        WRITER_ID
+        WRITER_ID,
+        0 AS DEPTH
         FROM FFG_BOARD2
         WHERE BOARD_NO = #{boardNo}
     </select>
@@ -103,9 +115,11 @@
 
     <update id="updateBoard">
         UPDATE FFG_BOARD2
-        SET TITLE = #{title},
-        CONTENT = #{content},
-        UPDATE_DATE = SYSDATE
+        SET TITLE = #{request.title},
+        CONTENT = #{request.content},
+        UPDATE_DATE = SYSDATE,
+        FILEPATH = #{request.filepath, jdbcType=VARCHAR},
+        FNAME = #{request.fname, jdbcType=VARCHAR}
         WHERE BOARD_NO = #{boardNo}
     </update>
 
@@ -113,5 +127,11 @@
         DELETE FROM FFG_BOARD2
         WHERE BOARD_NO = #{boardNo}
     </delete>
+
+    <select id="countChildBoards" resultType="int">
+        SELECT COUNT(*)
+        FROM FFG_BOARD2
+        WHERE REFNO = #{boardNo}
+    </select>
 
 </mapper>

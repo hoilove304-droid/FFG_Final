@@ -1,75 +1,138 @@
-const BASE_URL = "http://localhost:8080/api";
-
-async function parseResponse(response, defaultMessage) {
-    let data = null;
-
-    try {
-        data = await response.json();
-    } catch {
-        // JSON 응답이 아니면 무시
-    }
-
-    if (!response.ok) {
-        throw new Error(data?.message || defaultMessage);
-    }
-
-    return data;
-}
+const BASE_URL = "http://localhost:8080/api/boards";
 
 export async function fetchBoardList({ boardType, page = 1, keyword = "" }) {
-    const query = new URLSearchParams({
+    const params = new URLSearchParams({
         boardType: String(boardType),
         page: String(page),
         keyword,
     });
 
-    const response = await fetch(`${BASE_URL}/boards?${query.toString()}`);
-    return parseResponse(response, "게시글 목록 조회 실패");
+    const response = await fetch(`${BASE_URL}?${params.toString()}`);
+
+    if (!response.ok) {
+        throw new Error("게시글 목록 조회에 실패했습니다.");
+    }
+
+    return await response.json();
 }
 
 export async function fetchBoardDetail({ boardNo, increaseReadcnt = true }) {
-    const query = new URLSearchParams({
+    const params = new URLSearchParams({
         increaseReadcnt: String(increaseReadcnt),
     });
 
-    const response = await fetch(`${BASE_URL}/boards/${boardNo}?${query.toString()}`);
-    return parseResponse(response, "게시글 상세 조회 실패");
+    const response = await fetch(`${BASE_URL}/${boardNo}?${params.toString()}`);
+
+    if (!response.ok) {
+        throw new Error("게시글 상세 조회에 실패했습니다.");
+    }
+
+    return await response.json();
 }
 
-export async function createBoard(payload) {
-    const response = await fetch(`${BASE_URL}/boards`, {
+export async function createBoard({
+                                      title,
+                                      content,
+                                      writerId,
+                                      boardType,
+                                      refno = 0,
+                                      file = null,
+                                  }) {
+    const formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("writerId", writerId);
+    formData.append("boardType", String(boardType));
+    formData.append("refno", String(refno));
+
+    if (file) {
+        formData.append("file", file);
+    }
+
+    const response = await fetch(BASE_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: formData,
     });
 
-    return parseResponse(response, "게시글 등록 실패");
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "게시글 등록에 실패했습니다.");
+    }
+
+    if (!result.success) {
+        throw new Error(result.message || "게시글 등록에 실패했습니다.");
+    }
+
+    return result;
 }
 
-export async function updateBoard(boardNo, payload) {
-    const response = await fetch(`${BASE_URL}/boards/${boardNo}`, {
+export async function updateBoard({
+                                      boardNo,
+                                      title,
+                                      content,
+                                      memberId,
+                                      role,
+                                      file = null,
+                                      deleteFile = false,
+                                  }) {
+    const formData = new FormData();
+
+    const data = {
+        title,
+        content,
+        memberId,
+        role,
+        deleteFile,
+    };
+
+    formData.append(
+        "data",
+        new Blob([JSON.stringify(data)], { type: "application/json" })
+    );
+
+    if (file) {
+        formData.append("file", file);
+    }
+
+    const response = await fetch(`${BASE_URL}/${boardNo}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: formData,
     });
 
-    return parseResponse(response, "게시글 수정 실패");
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "게시글 수정에 실패했습니다.");
+    }
+
+    if (!result.success) {
+        throw new Error(result.message || "게시글 수정에 실패했습니다.");
+    }
+
+    return result;
 }
 
 export async function deleteBoard(boardNo, boardType, memberId, role) {
-    const query = new URLSearchParams({
-        boardType: String(boardType),
-        memberId: memberId || "",
-        role: role || "",
+    const params = new URLSearchParams({
+        memberId,
+        role,
     });
 
-    const response = await fetch(`${BASE_URL}/boards/${boardNo}?${query.toString()}`, {
+    const response = await fetch(`${BASE_URL}/${boardNo}?${params.toString()}`, {
         method: "DELETE",
     });
 
-    return parseResponse(response, "게시글 삭제 실패");
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "게시글 삭제에 실패했습니다.");
+    }
+
+    if (!result.success) {
+        throw new Error(result.message || "게시글 삭제에 실패했습니다.");
+    }
+
+    return result;
 }

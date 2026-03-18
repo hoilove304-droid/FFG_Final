@@ -12,6 +12,7 @@ public class BoardDto {
   private String filepath;
   private String fname;
   private String writerId;
+  private Integer depth;
 
   public Long getBoardNo() {
     return boardNo;
@@ -91,5 +92,13 @@ public class BoardDto {
 
   public void setWriterId(String writerId) {
     this.writerId = writerId;
+  }
+
+  public Integer getDepth() {
+    return depth;
+  }
+
+  public void setDepth(Integer depth) {
+    this.depth = depth;
   }
 }
