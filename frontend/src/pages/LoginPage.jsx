@@ -33,8 +33,8 @@ function LoginPage(){
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    memberId,
-                    pwd,
+                    memberId: username,
+                    pwd: password,
                     bankCode,
                 }),
             });
