@@ -430,7 +430,7 @@ function AdminDashboardPage() {
                             </tr>
                             </thead>
                             <tbody>
-                            {suspiciousData.map((item) => (
+                            {suspiciousData.slice(0, 5).map((item) => (
                                 <tr key={item.bankName} className={item.isFraud === 1 ? "row_fraud" : ""}>
                                     <td>{item.bankName}</td>
                                     <td>{item.detectedCount}</td>
@@ -453,7 +453,11 @@ function AdminDashboardPage() {
                     <div className="report">
                         <h3>AI 이상징후 패턴 탐지 결과</h3>
                         <ul className="pattern_list">
-                            {patternList.map((item, idx) => (
+                            {["high", "mid", "low"].flatMap((level) =>
+                                patternList
+                                    .filter((item) => item.level === level)
+                                    .slice(0, 2)
+                            ).map((item, idx) => (
                                 <li key={`${item.level}-${idx}`} className={`pattern_row risk_${item.level}`}>
                                     <div className="left">
                                         <span className="dot"></span>
@@ -470,27 +474,7 @@ function AdminDashboardPage() {
                                                 {item.isFraud === 1 ? "사기" : "정상"}
                                             </span>
                                         )}
-                                        {item.shapImage && (
-                                            <button
-                                                className="shap_btn"
-                                                onClick={() => setSelectedPattern(selectedPattern === idx ? null : idx)}
-                                                title="AI 예측 근거 보기"
-                                            >📊</button>
-                                        )}
                                     </div>
-                                    {selectedPattern === idx && item.shapImage && (
-                                        <div className="shap_panel">
-                                            <div className="shap_panel_header">
-                                                <span>AI 예측 근거 (SHAP) — {item.text}</span>
-                                                <button className="shap_close" onClick={() => setSelectedPattern(null)}>✕</button>
-                                            </div>
-                                            <img
-                                                src={`data:image/png;base64,${item.shapImage}`}
-                                                alt="SHAP 분석 결과"
-                                                className="shap_img"
-                                            />
-                                        </div>
-                                    )}
                                 </li>
                             ))}
                         </ul>
