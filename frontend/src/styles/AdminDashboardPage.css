@@ -216,14 +216,16 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 8px;
-    padding: 10px 10px 18px;
+    padding: 20px 10px 22px;
     box-sizing: border-box;
 }
 
 .chart_bar .bar {
     flex: 1;
     min-width: 20px;
-    height: calc(var(--v) * 1%);
+    /* --v 최대값(100)이 와도 차트 영역의 70%까지만 채우도록 스케일 제한 */
+    height: calc(var(--v) * 0.7%);
+    max-height: 75%;
     border-radius: 6px 6px 2px 2px;
     background: linear-gradient(180deg, rgba(11, 155, 151, 0.9), rgba(11, 155, 151, 0.25));
     border: 1px solid rgba(11, 155, 151, 0.45);
@@ -232,21 +234,23 @@
 
 .bar .count {
     position: absolute;
-    top: -22px;
+    top: -16px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 600;
     color: var(--primary-green);
+    white-space: nowrap;
 }
 
 .bar .label {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: -21px;
-    font-size: 12px;
+    bottom: -17px;
+    font-size: 9px;
     color: #6b7280;
+    white-space: nowrap;
 }
 
 .chart_wrap.chart_line {
@@ -538,7 +542,7 @@
 
     .bar .count,
     .bar .label {
-        font-size: 11px;
+        font-size: 9px;
     }
 
     .report table {
@@ -559,4 +563,241 @@
         width: calc(100vw - 24px);
         padding: 24px 16px;
     }
+}
+/* ══════════════════════════════════════════════
+   AI 연동 추가 스타일
+══════════════════════════════════════════════ */
+
+/* AI 상태 뱃지 */
+.ai_status_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.ai_status_idle {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+    color: #6b7280;
+}
+
+.ai_status_loading {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.ai_status_ok {
+    background: #ecfdf5;
+    border-color: #6ee7b7;
+    color: #065f46;
+}
+
+.ai_status_error {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #991b1b;
+}
+
+/* 스피너 */
+.ai_status_spinner {
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(146, 64, 14, 0.3);
+    border-top-color: #92400e;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 상태 점 */
+.ai_status_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    flex-shrink: 0;
+    animation: pulse_green 2s ease-in-out infinite;
+}
+
+@keyframes pulse_green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.ai_status_err_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    flex-shrink: 0;
+}
+
+.ai_status_label {
+    font-size: 12px;
+}
+
+/* 수동 갱신 버튼 */
+.ai_refresh_btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #065f46;
+    padding: 0 2px;
+    line-height: 1;
+    transition: transform 0.2s;
+}
+.ai_refresh_btn:hover {
+    transform: rotate(180deg);
+}
+
+/* 요약 카드 로딩 상태 */
+.error_box--loading {
+    opacity: 0.6;
+    animation: shimmer 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+    from { opacity: 0.6; }
+    to   { opacity: 0.9; }
+}
+
+/* 차트 로딩 태그 */
+.chart_loading_tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    background: #fde68a;
+    color: #92400e;
+    vertical-align: middle;
+}
+
+/* 월별 라인 차트 */
+.monthly_svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* AI 로딩 펄스 */
+.ai_loading_pulse {
+    animation: pulse_text 1.2s ease-in-out infinite;
+}
+@keyframes pulse_text {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* 사기/정상 뱃지 */
+.fraud_badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.fraud_badge--danger {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+
+.fraud_badge--safe {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+/* SHAP 버튼 */
+.shap_btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 2px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+}
+.shap_btn:hover {
+    transform: scale(1.2);
+}
+
+/* SHAP 패널 (패턴 행 아래 인라인 펼침) */
+.shap_panel {
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    overflow: hidden;
+}
+
+.shap_panel_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.shap_close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: #6b7280;
+    padding: 0;
+    line-height: 1;
+}
+.shap_close:hover {
+    color: #111827;
+}
+
+.shap_img {
+    width: 100%;
+    display: block;
+    border-radius: 0 0 8px 8px;
+}
+
+/* pattern_row가 column 방향으로 wrap 가능하게 */
+.pattern_row {
+    flex-wrap: wrap;
+}
+
+/* 테이블 사기 의심 행 강조 */
+.row_fraud td {
+    background: #fff5f5;
+}
+
+/* 위험도 퍼센트 숫자 */
+.risk_pct {
+    font-size: 11px;
+    font-weight: 700;
+    color: #374151;
+    min-width: 28px;
+    text-align: right;
 }
