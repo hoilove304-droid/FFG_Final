@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "../services/api";
 import "../styles/TxDataInputPage.css";
+
+// Flask AI 서버 주소
+const AI_URL = import.meta.env.VITE_AI_URL || "http://localhost:5000";
 
 function TxDataInputPage() {
     const navigate = useNavigate();
@@ -28,14 +31,9 @@ function TxDataInputPage() {
         isFraud: null,
         fraudProbability: null,
         shapImage: "",
+        shapDetail: null,
         error: "",
     });
-
-    const [txList, setTxList] = useState([]);
-
-    useEffect(() => {
-        fetchRecentTxData();
-    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -73,48 +71,6 @@ function TxDataInputPage() {
         return true;
     };
 
-    const getBankName = (bankCode) => {
-        switch (bankCode) {
-            case "01":
-                return "관리자";
-            case "02":
-                return "하나은행";
-            case "03":
-                return "우리은행";
-            case "04":
-                return "카카오뱅크";
-            default:
-                return "-";
-        }
-    };
-
-    const getTxTypeLabel = (txType) => {
-        switch (txType) {
-            case "TRANSFER":
-                return "이체";
-            case "WITHDRAW":
-                return "출금";
-            case "DEPOSIT":
-                return "입금";
-            case "PAYMENT":
-                return "결제";
-            default:
-                return txType;
-        }
-    };
-
-    const formatAmount = (amount) => Number(amount).toLocaleString("ko-KR");
-
-    const formatDateTime = (value) => {
-        if (!value) return "";
-        return value.replace("T", " ");
-    };
-
-    const formatDateTimeForList = (value) => {
-        if (!value) return "";
-        return String(value).replace("T", " ");
-    };
-
     const resetForm = () => {
         setForm({
             userId: "",
@@ -132,31 +88,6 @@ function TxDataInputPage() {
         });
     };
 
-    const fetchRecentTxData = async () => {
-        try {
-            const response = await fetch(apiUrl("/api/tx/recent"));
-
-            if (!response.ok) {
-                throw new Error("최근 거래 데이터 조회 실패");
-            }
-
-            const data = await response.json();
-
-            const mapped = data.map((item) => ({
-                txId: item.txId,
-                userId: item.userId,
-                bankName: getBankName(item.bankCode),
-                txType: getTxTypeLabel(item.txType),
-                txAmount: formatAmount(item.txAmount),
-                txDatetime: formatDateTimeForList(item.txDatetime),
-            }));
-
-            setTxList(mapped);
-        } catch (error) {
-            console.error("최근 거래 데이터 불러오기 오류:", error);
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -165,22 +96,20 @@ function TxDataInputPage() {
         try {
             const response = await fetch(apiUrl("/api/tx"), {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: form.userId,
-                    bankCode: form.bankCode,
-                    txChannel: form.txChannel,
-                    txType: form.txType,
-                    txAmount: Number(form.txAmount),
+                    userId:     form.userId,
+                    bankCode:   form.bankCode,
+                    txChannel:  form.txChannel,
+                    txType:     form.txType,
+                    txAmount:   Number(form.txAmount),
                     txDatetime: form.txDatetime,
-                    txCountry: form.txCountry,
+                    txCountry:  form.txCountry,
                     txLocation: form.txLocation,
                     deviceType: form.deviceType,
-                    deviceOs: form.deviceOs,
-                    deviceId: form.deviceId,
-                    ipAddress: form.ipAddress,
+                    deviceOs:   form.deviceOs,
+                    deviceId:   form.deviceId,
+                    ipAddress:  form.ipAddress,
                 }),
             });
 
@@ -192,13 +121,13 @@ function TxDataInputPage() {
 
             alert("거래 데이터가 DB에 저장되었습니다.");
             resetForm();
-            fetchRecentTxData();
         } catch (error) {
             console.error("거래 데이터 저장 오류:", error);
             alert(error.message || "거래 데이터 저장 중 오류가 발생했습니다.");
         }
     };
 
+    // ── AI 분석 (Flask 실제 호출) ─────────────────────────
     const handleAiAnalyze = async () => {
         if (!validateForm()) return;
 
@@ -209,29 +138,39 @@ function TxDataInputPage() {
             isFraud: null,
             fraudProbability: null,
             shapImage: "",
+            shapDetail: null,
             error: "",
         });
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 800));
+            const res = await fetch(`${AI_URL}/predict`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    txChannel:  form.txChannel,
+                    txType:     form.txType,
+                    txAmount:   Number(form.txAmount),
+                    txDatetime: form.txDatetime,
+                    txCountry:  form.txCountry,
+                    txLocation: form.txLocation,
+                    deviceType: form.deviceType,
+                    deviceOs:   form.deviceOs,
+                }),
+            });
 
-            const amount = Number(form.txAmount);
-            const country = (form.txCountry || "").toUpperCase();
-
-            const suspicious =
-                amount >= 3000000 ||
-                country === "RU" ||
-                country === "NG" ||
-                form.txChannel === "ATM";
+            if (!res.ok) throw new Error("AI 서버 응답 오류");
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || "AI 분석 실패");
 
             setAiResult({
-                visible: true,
-                loading: false,
-                resultText: suspicious ? "사기 의심 거래" : "정상 거래",
-                isFraud: suspicious ? 1 : 0,
-                fraudProbability: suspicious ? 87.4 : 14.8,
-                shapImage: "",
-                error: "",
+                visible:          true,
+                loading:          false,
+                resultText:       data.resultText,
+                isFraud:          data.isFraud,
+                fraudProbability: data.fraudProbability,
+                shapImage:        data.shapImage,
+                shapDetail:       data.shapDetail,
+                error:            "",
             });
         } catch (error) {
             setAiResult({
@@ -241,13 +180,10 @@ function TxDataInputPage() {
                 isFraud: null,
                 fraudProbability: null,
                 shapImage: "",
-                error: "분석 요청 중 오류가 발생했습니다.",
+                shapDetail: null,
+                error: error.message || "분석 요청 중 오류가 발생했습니다.",
             });
         }
-    };
-
-    const handleGoBack = () => {
-        navigate("/admin");
     };
 
     return (
@@ -261,13 +197,14 @@ function TxDataInputPage() {
                     <button
                         type="button"
                         className="tx-page__back-btn"
-                        onClick={handleGoBack}
+                        onClick={() => navigate("/admin")}
                     >
                         돌아가기
                     </button>
                 </div>
 
                 <div className="tx-layout">
+                    {/* ── 왼쪽: 입력 폼 ── */}
                     <section className="tx-left-panel">
                         <form className="tx-form" onSubmit={handleSubmit}>
                             <div className="tx-form__grid">
@@ -455,6 +392,7 @@ function TxDataInputPage() {
                         </form>
                     </section>
 
+                    {/* ── 오른쪽: AI 결과 ── */}
                     <section className="tx-right-panel">
                         <div className="right-card">
                             <h3 className="right-card__title">AI 분석 결과</h3>
@@ -462,7 +400,7 @@ function TxDataInputPage() {
                             {!aiResult.visible ? (
                                 <div className="empty-box">아직 분석 결과가 없습니다.</div>
                             ) : aiResult.loading ? (
-                                <div className="empty-box">분석 중입니다...</div>
+                                <div className="empty-box">AI 분석 중입니다...</div>
                             ) : aiResult.error ? (
                                 <div className="error-box">{aiResult.error}</div>
                             ) : (
@@ -480,54 +418,30 @@ function TxDataInputPage() {
                                         </span>
                                     </p>
                                     <p>
-                                        <strong>사기 확률:</strong> {aiResult.fraudProbability}%
+                                        <strong>사기 확률:</strong>{" "}
+                                        <span style={{
+                                            color: aiResult.isFraud === 1 ? "#e74c3c" : "#27ae60",
+                                            fontWeight: "bold"
+                                        }}>
+                                            {aiResult.fraudProbability}%
+                                        </span>
                                     </p>
                                     <div className="ai-result-box__report">
-                                        <h4>예측 근거 시각화</h4>
-                                        <div className="ai-result-box__placeholder">
-                                            SHAP 이미지가 아직 없습니다.
-                                        </div>
+                                        <h4>예측 근거 시각화 (SHAP)</h4>
+                                        {aiResult.shapImage ? (
+                                            <img
+                                                src={`data:image/png;base64,${aiResult.shapImage}`}
+                                                alt="SHAP 분석 결과"
+                                                style={{ width: "100%", borderRadius: "6px" }}
+                                            />
+                                        ) : (
+                                            <div className="ai-result-box__placeholder">
+                                                SHAP 이미지 없음
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}
-                        </div>
-
-                        <div className="right-card">
-                            <h3 className="right-card__title">최근 입력 데이터 (5건)</h3>
-                            <div className="tx-table-wrap fixed-table">
-                                <table className="tx-table">
-                                    <thead>
-                                    <tr>
-                                        <th>거래 ID</th>
-                                        <th>사용자 ID</th>
-                                        <th>은행</th>
-                                        <th>유형</th>
-                                        <th>금액</th>
-                                        <th>시간</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {txList.length > 0 ? (
-                                        txList.slice(0, 5).map((tx) => (
-                                            <tr key={tx.txId}>
-                                                <td>{tx.txId}</td>
-                                                <td>{tx.userId}</td>
-                                                <td>{tx.bankName}</td>
-                                                <td>{tx.txType}</td>
-                                                <td>{tx.txAmount}</td>
-                                                <td>{tx.txDatetime}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="6" className="tx-table__empty">
-                                                데이터가 없습니다.
-                                            </td>
-                                        </tr>
-                                    )}
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </section>
                 </div>
