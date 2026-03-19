@@ -52,7 +52,7 @@
                      BANK_CODE AS bankCode,
                      TX_TYPE AS txType,
                      TX_AMOUNT AS txAmount,
-                     TX_DATETIME AS txDatetime
+                     TO_CHAR(TX_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS txDatetime
                  FROM FFG_TX_DATA
                  ORDER BY TX_ID DESC
              )

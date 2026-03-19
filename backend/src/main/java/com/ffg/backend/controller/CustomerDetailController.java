@@ -4,7 +4,6 @@ import com.ffg.backend.dto.CustomerDetailResponseDto;
 import com.ffg.backend.service.CustomerDetailService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/bank")
 public class CustomerDetailController {

@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {

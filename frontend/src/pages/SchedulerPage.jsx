@@ -10,7 +10,7 @@ function SchedulerPage() {
     const [showEventModal, setShowEventModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [reloadSchedules, setReloadSchedules] = useState(() => () => {});
+    const [reloadSchedules, setReloadSchedules] = useState(null);
 
     const handleOpenEventModal = ({ selectedDate, selectedEvent, reloadSchedules }) => {
         setSelectedDate(selectedDate || null);
@@ -42,7 +42,7 @@ function SchedulerPage() {
                     onClose={handleCloseEventModal}
                     selectedDate={selectedDate}
                     selectedEvent={selectedEvent}
-                    onSaved={reloadSchedules}
+                    onSaved={reloadSchedules || (() => {})}
                 />
             )}
         </div>

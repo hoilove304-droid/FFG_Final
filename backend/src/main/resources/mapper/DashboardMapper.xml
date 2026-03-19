@@ -21,8 +21,7 @@
         t.FRAUD_SCORE AS fraudScore,
         TO_CHAR(t.TX_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS txDatetime
         FROM FFG_TX_DATA t
-        JOIN FFG_BANK_CUSTOMER_DETAIL c
-        ON t.USER_ID = c.USER_ID
+                 JOIN FFG_BANK_CUSTOMER_DETAIL c ON t.USER_ID = c.USER_ID AND t.BANK_CODE = c.BANK_CODE
         WHERE t.BANK_CODE = #{bankCode}
         ORDER BY t.TX_DATETIME DESC
     </select>

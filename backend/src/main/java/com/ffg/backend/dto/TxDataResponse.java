@@ -1,7 +1,5 @@
 package com.ffg.backend.dto;
 
-import java.util.Date;
-
 public class TxDataResponse {
 
   private Long txId;
@@ -9,7 +7,7 @@ public class TxDataResponse {
   private String bankCode;
   private String txType;
   private Double txAmount;
-  private Date txDatetime;
+  private String txDatetime;
 
   public Long getTxId() {
     return txId;
@@ -51,11 +49,11 @@ public class TxDataResponse {
     this.txAmount = txAmount;
   }
 
-  public Date getTxDatetime() {
+  public String getTxDatetime() {
     return txDatetime;
   }
 
-  public void setTxDatetime(Date txDatetime) {
+  public void setTxDatetime(String txDatetime) {
     this.txDatetime = txDatetime;
   }
 }
