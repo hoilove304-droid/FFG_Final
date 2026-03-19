@@ -6,12 +6,31 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 import shap
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+# ── 한글 폰트 설정 ────────────────────────────────────────
+# Windows 기본 한글 폰트 (맑은 고딕) 사용
+plt.rcParams["font.family"] = "Malgun Gothic"
+plt.rcParams["axes.unicode_minus"] = False  # 마이너스 기호 깨짐 방지
+
+# ── 피처명 한글 매핑 ──────────────────────────────────────
+FEATURE_LABELS = {
+    "tx_amount":   "거래금액",
+    "tx_country":  "거래국가",
+    "tx_type":     "거래유형",
+    "tx_hour":     "거래시간(시)",
+    "tx_weekday":  "거래요일",
+    "tx_channel":  "거래채널",
+    "tx_location": "거래위치",
+    "device_type": "디바이스타입",
+    "device_os":   "디바이스OS",
+}
 
 # ── 모델·인코더·피처 로드 ────────────────────────────────
 with open("model/model.pkl", "rb") as f:
@@ -23,7 +42,7 @@ with open("model/encoders.pkl", "rb") as f:
 with open("model/feature_cols.pkl", "rb") as f:
     feature_cols = pickle.load(f)
 
-# SHAP explainer (TreeExplainer = XGBoost 전용, 빠름)
+# SHAP explainer
 explainer = shap.TreeExplainer(model)
 
 print("✅ 모델 로드 완료")
@@ -32,10 +51,6 @@ print(f"   피처: {feature_cols}")
 
 # ── 입력 데이터 전처리 ────────────────────────────────────
 def preprocess(data: dict) -> pd.DataFrame:
-    """
-    React/Spring Boot 에서 넘어오는 거래 데이터를
-    모델 입력 형식으로 변환
-    """
     from datetime import datetime
 
     dt_str = data.get("txDatetime", "")
@@ -61,7 +76,6 @@ def preprocess(data: dict) -> pd.DataFrame:
 
     df = pd.DataFrame([row])
 
-    # 범주형 인코딩 (학습 때 보지 못한 값은 0으로 처리)
     categorical_cols = [
         "tx_channel", "tx_type", "tx_country",
         "tx_location", "device_type", "device_os"
@@ -80,34 +94,30 @@ def preprocess(data: dict) -> pd.DataFrame:
     return df[feature_cols]
 
 
-# ── SHAP 이미지 생성 ──────────────────────────────────────
+# ── SHAP 이미지 생성 (한글) ───────────────────────────────
 def make_shap_image(shap_values, feature_names, feature_values) -> str:
-    """
-    SHAP waterfall 차트를 Base64 PNG 문자열로 반환
-    """
-    plt.rcParams["font.family"] = "DejaVu Sans"
-
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    # 피처별 SHAP 값 정렬 (절댓값 기준 내림차순)
+    # 절댓값 기준 상위 8개 피처
     indices = np.argsort(np.abs(shap_values))[::-1]
     top_n   = min(8, len(indices))
     indices = indices[:top_n]
 
-    names  = [feature_names[i] for i in indices]
-    values = [shap_values[i]   for i in indices]
+    # 한글 라벨로 변환
+    names  = [FEATURE_LABELS.get(feature_names[i], feature_names[i]) for i in indices]
+    values = [shap_values[i] for i in indices]
     colors = ["#e74c3c" if v > 0 else "#3498db" for v in values]
 
     bars = ax.barh(names[::-1], values[::-1], color=colors[::-1])
     ax.axvline(0, color="black", linewidth=0.8)
-    ax.set_xlabel("SHAP value (이상거래 기여도)")
+    ax.set_xlabel("SHAP 값 (이상거래 기여도)")
     ax.set_title("AI 예측 근거 (SHAP)")
-    ax.tick_params(axis="y", labelsize=9)
+    ax.tick_params(axis="y", labelsize=10)
 
     # 값 라벨
     for bar, val in zip(bars, values[::-1]):
         ax.text(
-            val + (0.002 if val >= 0 else -0.002),
+            val + (0.05 if val >= 0 else -0.05),
             bar.get_y() + bar.get_height() / 2,
             f"{val:+.3f}",
             va="center",
@@ -137,14 +147,11 @@ def predict():
     try:
         data = request.get_json(force=True)
 
-        # 전처리
         df_input = preprocess(data)
 
-        # 예측
-        prob      = float(model.predict_proba(df_input)[0][1])  # 이상거래 확률
-        is_fraud  = int(prob >= 0.5)
+        prob     = float(model.predict_proba(df_input)[0][1])
+        is_fraud = int(prob >= 0.5)
 
-        # SHAP
         shap_vals  = explainer.shap_values(df_input)
         shap_row   = shap_vals[0] if shap_vals.ndim == 2 else shap_vals[0]
         shap_image = make_shap_image(
@@ -153,18 +160,17 @@ def predict():
             df_input.iloc[0].tolist(),
         )
 
-        # 피처별 SHAP 값 (프론트에서 텍스트로도 표시 가능)
         shap_detail = {
-            feature_cols[i]: round(float(shap_row[i]), 4)
+            FEATURE_LABELS.get(feature_cols[i], feature_cols[i]): round(float(shap_row[i]), 4)
             for i in range(len(feature_cols))
         }
 
         return jsonify({
             "success":          True,
             "isFraud":          is_fraud,
-            "fraudProbability": round(prob * 100, 2),   # % 단위
+            "fraudProbability": round(prob * 100, 2),
             "resultText":       "사기 의심 거래" if is_fraud else "정상 거래",
-            "shapImage":        shap_image,             # Base64 PNG
+            "shapImage":        shap_image,
             "shapDetail":       shap_detail,
         })
 
@@ -172,6 +178,6 @@ def predict():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
-# ── 실행 ─────────────────────────────────────────────────
+# ── 실행 ──────────────────────────────────────────────────
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
