@@ -1,3 +1,7 @@
+.content{
+    padding-top: 12px;
+}
+
 .customer-detail-page {
     display: flex;
     flex-direction: column;
@@ -137,6 +141,31 @@
     background: #f0fdf4;
 }
 
+.score_box.total.total_fraud {
+    background: #fff1f2;
+}
+
+/* 총점 행: 왼쪽(총점+점수) / 오른쪽(배지+버튼) */
+.total_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.total_left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.total_right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
 .error-text {
     color: #dc2626;
     font-weight: 700;
@@ -146,6 +175,119 @@
     max-height: 180px;
     overflow-y: auto;
     overflow-x: auto;
+}
+
+/* ── AI 관련 추가 스타일 ── */
+.chart_loading_tag,
+.ai_label_tag {
+    margin-left: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    vertical-align: middle;
+}
+
+.chart_loading_tag {
+    color: var(--primary-green, #16a34a);
+    background: #dcfce7;
+}
+
+.ai_label_tag {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.fraud_badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.fraud_badge--danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.fraud_badge--safe {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+/* 비교 테이블 AI 행 */
+.ai_row_fraud td {
+    background: #fff1f2;
+}
+
+.ai_row_normal td {
+    background: #f0fdf4;
+}
+
+/* 근거 보기 버튼 */
+.shap_btn {
+    align-self: flex-start;
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #374151;
+    margin-top: 2px;
+}
+
+.shap_btn:hover {
+    background: #f3f4f6;
+}
+
+/* SHAP 모달 */
+.shap_modal_overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shap_modal {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 600px;
+    max-width: 90vw;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.shap_panel_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.shap_close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #6b7280;
+}
+
+.shap_close:hover {
+    color: #111;
+}
+
+.shap_img {
+    width: 100%;
+    display: block;
 }
 
 @media (max-width: 1200px) {
